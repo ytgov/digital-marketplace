@@ -21,7 +21,9 @@ export async function createUser(connection: Connection, user: Omit<User, 'id' |
       ...user,
       id: generateUuid(),
       createdAt: now,
-      updatedAt: now
+      updatedAt: now,
+      notificationsOn: false,
+      acceptedTerms: false
     }, ['*']);
   if (!result) {
     throw new Error('unable to create user');

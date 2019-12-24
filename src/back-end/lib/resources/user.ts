@@ -8,10 +8,10 @@ import { isBoolean } from 'lodash';
 import { getString } from 'shared/lib';
 import { FileRecord } from 'shared/lib/resources/file';
 import { Session } from 'shared/lib/resources/session';
-import { parseUserType, UpdateRequestBody, UpdateValidationErrors, User, UserStatus, UserType } from 'shared/lib/resources/user';
+import { isPublicSector, parseUserType, UpdateRequestBody, UpdateValidationErrors, User, UserStatus, UserType } from 'shared/lib/resources/user';
 import { Id } from 'shared/lib/types';
-import { allValid, getInvalidValue, invalid, valid } from 'shared/lib/validation';
-import { validateAcceptedTerms, validateEmail, validateName, validateNotificationsOn, validateUserType } from 'shared/lib/validation/user';
+import { allValid, getInvalidValue, invalid, isValid, mapValid, valid } from 'shared/lib/validation';
+import { validateAcceptedTerms, validateEmail, validateJobTitle, validateName, validateNotificationsOn, validateUserType } from 'shared/lib/validation/user';
 
 export interface ValidatedUpdateRequestBody extends Omit<UpdateRequestBody, 'avatarImageFile' | 'notificationsOn' | 'acceptedTerms'> {
   id: Id;
@@ -80,6 +80,7 @@ const resource: Resource = {
         return {
           name: getString(body, 'name') || undefined,
           email: getString(body, 'email') || undefined,
+          jobTitle: getString(body, 'jobTitle') || undefined,
           avatarImageFile: getString(body, 'avatarImageFile') || undefined,
           notificationsOn: isBoolean(body.notificationsOn) ? body.notificationsOn : undefined,
           acceptedTerms: isBoolean(body.acceptedTerms) ? body.acceptedTerms : undefined,
@@ -87,21 +88,25 @@ const resource: Resource = {
         };
       },
       async validateRequestBody(request) {
-        const { type, name, email, avatarImageFile, notificationsOn, acceptedTerms } = request.body;
+        const { type, name, email, jobTitle, avatarImageFile, notificationsOn, acceptedTerms } = request.body;
         const validatedUserId = await validateUserId(connection, request.params.id);
         const validatedName = name ? validateName(name) : valid(undefined);
         const validatedEmail = email ? validateEmail(email) : valid(undefined);
+        const validatedJobTitle = isValid(validatedUserId) && isPublicSector(validatedUserId.value.type)
+          // Default job title to an empty string so it properly "unsets" the value in the DB.
+          ? mapValid(validateJobTitle(jobTitle), v => v || '')
+          : valid(undefined);
         const validatedAvatarImageFile = avatarImageFile ? await validateImageFile(connection, avatarImageFile) : valid(undefined);
         const validatedNotificationsOn = notificationsOn !== undefined ? validateNotificationsOn(notificationsOn) : valid(undefined);
         const validatedAcceptedTerms = acceptedTerms !== undefined ? validateAcceptedTerms(acceptedTerms) : valid(undefined);
         const validatedUserType = type !== undefined ? validateUserType(type) : valid(undefined);
 
-        if (allValid([validatedUserId, validatedName, validatedEmail, validatedAvatarImageFile, validatedNotificationsOn, validatedAcceptedTerms, validatedUserType])) {
+        if (allValid([validatedUserId, validatedName, validatedEmail, validatedJobTitle, validatedAvatarImageFile, validatedNotificationsOn, validatedAcceptedTerms, validatedUserType])) {
 
           // Check for admin role, and if not own account, ensure only user id was provided (re-activation scenario) OR that the user type is being changed
           // Admin shouldn't provide any other updates to profile
           if (permissions.isAdmin(request.session) && !permissions.isOwnAccount(request.session, request.params.id)) {
-            if (validatedName.value || validatedEmail.value || validatedAvatarImageFile.value || validatedNotificationsOn.value || validatedAcceptedTerms.value) {
+            if (validatedName.value || validatedEmail.value || validatedJobTitle.value || validatedAvatarImageFile.value || validatedNotificationsOn.value || validatedAcceptedTerms.value) {
               return invalid({
                 permissions: [permissions.ERROR_MESSAGE]
               });
@@ -133,6 +138,7 @@ const resource: Resource = {
             id: (validatedUserId.value as User).id,
             name: validatedName.value,
             email: validatedEmail.value,
+            jobTitle: validatedJobTitle.value,
             avatarImageFile: validatedAvatarImageFile.value,
             notificationsOn: validatedNotificationsOn.value,
             acceptedTerms: validatedAcceptedTerms.value
@@ -142,6 +148,7 @@ const resource: Resource = {
             id: getInvalidValue(validatedUserId, undefined),
             name: getInvalidValue(validatedName, undefined),
             email: getInvalidValue(validatedEmail, undefined),
+            jobTitle: getInvalidValue(validatedJobTitle, undefined),
             avatarImageFile: getInvalidValue(validatedAvatarImageFile, undefined),
             notificationsOn: getInvalidValue(validatedNotificationsOn, undefined),
             acceptedTerms: getInvalidValue(validatedAcceptedTerms, undefined)

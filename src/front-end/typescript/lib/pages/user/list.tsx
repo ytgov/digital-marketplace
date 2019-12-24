@@ -3,7 +3,7 @@ import { isUserType } from 'front-end/lib/access-control';
 import { Route, SharedState } from 'front-end/lib/app/types';
 import * as Table from 'front-end/lib/components/table';
 import { ComponentView, GlobalComponentMsg, immutable, Immutable, mapComponentDispatch, PageComponent, PageInit, replaceRoute, Update, updateComponentChild } from 'front-end/lib/framework';
-import * as UserHelpers from 'front-end/lib/pages/user/helpers';
+import * as UserHelpers from 'front-end/lib/pages/user/lib';
 import Icon from 'front-end/lib/views/icon';
 import Link, { routeDest } from 'front-end/lib/views/link';
 import React from 'react';

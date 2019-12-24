@@ -11,16 +11,6 @@ export enum UserType {
   Admin = 'ADMIN'
 }
 
-export function userTypeToKeycloakIdentityProvider(userType: UserType): KeyCloakIdentityProvider {
-  switch (userType) {
-    case UserType.Vendor:
-      return 'github';
-    case UserType.Government:
-    case UserType.Admin:
-      return 'idir';
-  }
-}
-
 export enum UserStatus {
   Active = 'ACTIVE',
   InactiveByUser = 'INACTIVE_USER',
@@ -46,6 +36,7 @@ export interface UpdateRequestBody {
   status?: UserStatus;
   name?: string;
   email?: string;
+  jobTitle?: string;
   avatarImageFile?: Id;
   notificationsOn?: boolean;
   acceptedTerms?: boolean;
@@ -67,6 +58,16 @@ export async function readOneUser(id: string): Promise<User | null> {
 
 export async function readAllUsers(): Promise<User[]> {
   return readMany<User>('/api/users');
+}
+
+export function userTypeToKeycloakIdentityProvider(userType: UserType): KeyCloakIdentityProvider {
+  switch (userType) {
+    case UserType.Vendor:
+      return 'github';
+    case UserType.Government:
+    case UserType.Admin:
+      return 'idir';
+  }
 }
 
 export function parseUserStatus(raw: string): UserStatus | null {
@@ -93,6 +94,24 @@ export function parseUserType(raw: string): UserType | null {
     default:
       return null;
   }
+}
+
+export function isPublicSector(userType: UserType): boolean {
+  switch (userType) {
+    case UserType.Vendor:
+      return false;
+    case UserType.Government:
+    case UserType.Admin:
+      return true;
+  }
+}
+
+export function isActive(user: User): boolean {
+  return user.status === UserStatus.Active;
+}
+
+export function isAdmin(user: User): boolean {
+  return user.type === UserType.Admin;
 }
 
 export function emptyUser(): User {

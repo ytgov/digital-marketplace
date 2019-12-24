@@ -1,27 +1,33 @@
 import { makePageMetadata } from 'front-end/lib';
+import { isSignedIn } from 'front-end/lib/access-control';
 import { Route, SharedState } from 'front-end/lib/app/types';
 import * as Checkbox from 'front-end/lib/components/form-field/checkbox';
 import * as MenuSidebar from 'front-end/lib/components/sidebar/menu';
 import { ComponentView, GlobalComponentMsg, Immutable, immutable, mapComponentDispatch, PageComponent, PageInit, Update, updateComponentChild } from 'front-end/lib/framework';
-import * as GovProfileForm from 'front-end/lib/pages/user/components/profile';
-import * as UserHelpers from 'front-end/lib/pages/user/helpers';
+import * as ProfileForm from 'front-end/lib/pages/user/components/profile';
+import * as UserHelpers from 'front-end/lib/pages/user/lib';
 import Icon from 'front-end/lib/views/icon';
-import Link, { routeDest } from 'front-end/lib/views/link';
+import { routeDest } from 'front-end/lib/views/link';
 import React from 'react';
 import { Col, Row } from 'reactstrap';
-import { emptyUser, readOneUser, updateUser, User } from 'shared/lib/resources/user';
+import { isAdmin, readOneUser, updateUser, User } from 'shared/lib/resources/user';
 import { adt, ADT } from 'shared/lib/types';
+import { invalid, valid, Validation } from 'shared/lib/validation';
 
-export interface State {
-  user: User;
-  govProfile: Immutable<GovProfileForm.State>;
+interface ValidState {
+  profileUser: User;
+  viewerUser: User;
+  isEditingForm: boolean;
+  profileForm: Immutable<ProfileForm.State>;
   adminCheckbox: Immutable<Checkbox.State>;
   editingAdminCheckbox: boolean;
   sidebar: Immutable<MenuSidebar.State>;
 }
 
+export type State = Validation<ValidState, null>;
+
 type InnerMsg
-  = ADT<'govProfile', GovProfileForm.Msg>
+  = ADT<'profileForm', ProfileForm.Msg>
   | ADT<'adminCheckbox', Checkbox.Msg>
   | ADT<'finishEditingAdminCheckbox', undefined>
   | ADT<'editingAdminCheckbox', undefined>
@@ -33,52 +39,54 @@ export interface RouteParams {
   userId: string;
 }
 
-const init: PageInit<RouteParams, SharedState, State, Msg> = async (params) => {
-  let user = await readOneUser(params.routeParams.userId);
-  if (!user) {
-    // TODO(Jesse): Handle error
-    user = emptyUser();
+const init: PageInit<RouteParams, SharedState, State, Msg> = isSignedIn({
+
+  async success({ routeParams, shared }) {
+    // Get the user's profile information.
+    const profileUser = await readOneUser(routeParams.userId);
+    if (profileUser.tag === 'invalid') {
+      return invalid(null);
+    }
+    const viewerUser = shared.sessionUser;
+    return valid({
+      profileUser,
+      viewerUser,
+      isEditing: false,
+      editingAdminCheckbox: false,
+      adminCheckbox: immutable(await Checkbox.init({
+        errors: [],
+        child: {
+          value: isAdmin(profileUser),
+          id: 'user-profile-admin-checkbox'
+        }
+      })),
+      profileForm: immutable(await ProfileForm.init(adt('existingUser', profileUser.value))),
+      sidebar: immutable(await MenuSidebar.init({
+        links: [
+          {
+            icon: 'user',
+            text: 'Profile',
+            active: true,
+            dest: routeDest(adt('userProfile', {userId: user.id}))
+          },
+          {
+            icon: 'bell',
+            text: 'Notifications',
+            active: false,
+            dest: routeDest(adt('landing', null))
+          },
+          {
+            icon: 'balance-scale',
+            text: 'Accepted Policies, Terms & Agreements',
+            active: false,
+            dest: routeDest(adt('landing', null))
+          }
+        ]
+      }))
+    });
   }
 
-  const displayUser: UserHelpers.DisplayUser = UserHelpers.toDisplayUser(user);
-
-  return ({
-    editingAdminCheckbox: false,
-    adminCheckbox: immutable(await Checkbox.init({
-      errors: [],
-      child: {
-        value: displayUser.admin,
-        id: 'user-admin-checkbox'
-      }
-    })),
-    user,
-    govProfile: immutable(await GovProfileForm.init({
-      existingUser: user
-    })),
-    sidebar: immutable(await MenuSidebar.init({
-      links: [
-        {
-          icon: 'user',
-          text: 'Profile',
-          active: true,
-          dest: routeDest(adt('userProfile', {userId: user.id}))
-        },
-        {
-          icon: 'bell',
-          text: 'Notifications',
-          active: false,
-          dest: routeDest(adt('landing', null))
-        },
-        {
-          icon: 'balance-scale',
-          text: 'Accepted Policies, Terms & Agreements',
-          active: false,
-          dest: routeDest(adt('landing', null))
-        }
-      ]
-    }))
-  });
-};
+});
 
 const update: Update<State, Msg> = ({ state, msg }) => {
   switch (msg.tag) {
@@ -102,13 +110,13 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childMsg: msg.value,
         mapChildMsg: value => adt('adminCheckbox', value)
       });
-    case 'govProfile':
+    case 'profileForm':
       return updateComponentChild({
         state,
-        childStatePath: ['govProfile'],
-        childUpdate: GovProfileForm.update,
+        childStatePath: ['profileForm'],
+        childUpdate: ProfileForm.update,
         childMsg: msg.value,
-        mapChildMsg: value => adt('govProfile', value)
+        mapChildMsg: value => adt('profileForm', value)
       });
     case 'sidebar':
       return updateComponentChild({
@@ -181,23 +189,12 @@ const view: ComponentView<State, Msg> = ({ state, dispatch }) => {
 
       </Row>
 
-      <Row className='border-top my-3 py-3'>
-
-        <Col xs='2'>
-        </Col>
-        <Col xs='10'>
-          <div className='pb-3'><strong>Profile Picture</strong></div>
-          <Link button className='btn-secondary'>Choose Image</Link>
-        </Col>
-
-      </Row>
-
       <Row>
         <Col xs='12'>
-          <GovProfileForm.view
+          <ProfileForm.view
             disabled={true}
-            state={state.govProfile}
-            dispatch={mapComponentDispatch(dispatch, value => adt('govProfile' as const, value))} />
+            state={state.profileForm}
+            dispatch={mapComponentDispatch(dispatch, value => adt('profileForm' as const, value))} />
         </Col>
       </Row>
 
