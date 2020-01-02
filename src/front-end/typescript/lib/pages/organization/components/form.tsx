@@ -254,12 +254,13 @@ export const update: Update<State, Msg> = ({ state, msg }) => {
             const submitHook: SubmitHook = msg.value;
             if (submitHook) { submitHook(result.value); }
             state.set('organization', result.value);
+            state = setErrors(state, {});
           } else {
             // FIXME(Jesse): This compiles, but doesn't actually work..
             dispatch(replaceRoute(adt('orgEdit' as const, {orgId: result.value.id})));
           }
         } else {
-          // TODO(Jesse): Handle errors
+          state = setErrors(state, result.value as Errors ); // TODO(Jesse): Why does this need to be cast?
         }
         return state;
       }];
