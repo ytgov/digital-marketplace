@@ -49,7 +49,7 @@ export type InnerMsg =
   ADT<'contactName',     ShortText.Msg> |
   ADT<'contactEmail',    ShortText.Msg> |
   ADT<'contactPhone',    ShortText.Msg> |
-  ADT<'submit',          SubmitHook>    |
+  ADT<'submit',          SubmitHook | undefined>    |
   ADT<'region',          ShortText.Msg>
   ;
 
@@ -250,15 +250,16 @@ export const update: Update<State, Msg> = ({ state, msg }) => {
          : await api.organizations.create(getValues(state));
 
         if (api.isValid(result)) {
+          state = setErrors(state, {});
           if (state.organization) {
-            const submitHook: SubmitHook = msg.value;
+            state = state.set('organization', result.value);
+            const submitHook: SubmitHook | undefined = msg.value;
             if (submitHook) { submitHook(result.value); }
-            state.set('organization', result.value);
-            state = setErrors(state, {});
           } else {
             // FIXME(Jesse): This compiles, but doesn't actually work..
             dispatch(replaceRoute(adt('orgEdit' as const, {orgId: result.value.id})));
           }
+
         } else {
           state = setErrors(state, result.value as Errors ); // TODO(Jesse): Why does this need to be cast?
         }
@@ -519,7 +520,7 @@ export const view: View<Props> = props => {
           <LoadingButton loading={isSubmitLoading}
             color='primary'
             symbol_={leftPlacement(iconLinkSymbol('plus-circle'))}
-            onClick={() => props.submitHook ? dispatch(adt('submit', props.submitHook)) : null }
+            onClick={() => dispatch(adt('submit', props.submitHook)) }
           >
             Save
           </LoadingButton>
