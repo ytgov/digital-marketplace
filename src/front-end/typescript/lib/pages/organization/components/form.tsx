@@ -13,9 +13,8 @@ import { getString } from 'shared/lib';
 import { SUPPORTED_IMAGE_EXTENSIONS } from 'shared/lib/resources/file';
 import { CreateRequestBody, Organization } from 'shared/lib/resources/organization';
 import { adt, ADT } from 'shared/lib/types';
-import { ErrorTypeFrom } from 'shared/lib/validation/index';
-import { validateUrl } from 'shared/lib/validation/organization';
-import { validateName } from 'shared/lib/validation/user';
+import { ErrorTypeFrom, validateThenMapValid } from 'shared/lib/validation';
+import * as orgValidation from 'shared/lib/validation/organization';
 
 export interface Params {
   organization?: Organization;
@@ -154,7 +153,7 @@ export const init: Init<Params, State> = async (params) => {
     submitLoading: 0,
     legalName: immutable(await ShortText.init({
       errors: [],
-      validate: validateName,
+      validate: orgValidation.validateLegalName,
       child: {
         type: 'text',
         value: getString(params.organization, 'legalName'),
@@ -163,7 +162,7 @@ export const init: Init<Params, State> = async (params) => {
     })),
     websiteUrl: immutable(await ShortText.init({
       errors: [],
-      validate: validateUrl,
+      validate: validateThenMapValid(orgValidation.validateWebsiteUrl, a => a || ''),
       child: {
         type: 'text',
         value: getString(params.organization, 'websiteUrl'),
@@ -172,7 +171,7 @@ export const init: Init<Params, State> = async (params) => {
     })),
     streetAddress1: immutable(await ShortText.init({
       errors: [],
-      validate: validateName,
+      validate: orgValidation.validateStreetAddress1,
       child: {
         type: 'text',
         value: getString(params.organization, 'streetAddress1'),
@@ -181,7 +180,7 @@ export const init: Init<Params, State> = async (params) => {
     })),
     streetAddress2: immutable(await ShortText.init({
       errors: [],
-      validate: validateName,
+      validate: validateThenMapValid(orgValidation.validateStreetAddress2, a => a || ''),
       child: {
         type: 'text',
         value: getString(params.organization, 'streetAddress2'),
@@ -190,7 +189,7 @@ export const init: Init<Params, State> = async (params) => {
     })),
     city: immutable(await ShortText.init({
       errors: [],
-      validate: validateName,
+      validate: orgValidation.validateCity,
       child: {
         type: 'text',
         value: getString(params.organization, 'city'),
@@ -199,7 +198,7 @@ export const init: Init<Params, State> = async (params) => {
     })),
     country: immutable(await ShortText.init({
       errors: [],
-      validate: validateName,
+      validate: orgValidation.validateCountry,
       child: {
         type: 'text',
         value: getString(params.organization, 'country'),
@@ -208,7 +207,7 @@ export const init: Init<Params, State> = async (params) => {
     })),
     mailCode: immutable(await ShortText.init({
       errors: [],
-      validate: validateName,
+      validate: orgValidation.validateMailCode,
       child: {
         type: 'text',
         value: getString(params.organization, 'mailCode'),
@@ -217,7 +216,7 @@ export const init: Init<Params, State> = async (params) => {
     })),
     contactTitle: immutable(await ShortText.init({
       errors: [],
-      validate: validateName,
+      validate: validateThenMapValid(orgValidation.validateContactTitle, a => a || ''),
       child: {
         type: 'text',
         value: getString(params.organization, 'contactTitle'),
@@ -226,7 +225,7 @@ export const init: Init<Params, State> = async (params) => {
     })),
     contactName: immutable(await ShortText.init({
       errors: [],
-      validate: validateName,
+      validate: orgValidation.validateContactName,
       child: {
         type: 'text',
         value: getString(params.organization, 'contactName'),
@@ -235,7 +234,7 @@ export const init: Init<Params, State> = async (params) => {
     })),
     contactEmail: immutable(await ShortText.init({
       errors: [],
-      validate: validateName,
+      validate: orgValidation.validateContactEmail,
       child: {
         type: 'text',
         value: getString(params.organization, 'contactEmail'),
@@ -244,7 +243,7 @@ export const init: Init<Params, State> = async (params) => {
     })),
     contactPhone: immutable(await ShortText.init({
       errors: [],
-      validate: validateName,
+      validate: validateThenMapValid(orgValidation.validateContactPhone, a => a || ''),
       child: {
         type: 'text',
         value: getString(params.organization, 'contactPhone'),
@@ -253,7 +252,7 @@ export const init: Init<Params, State> = async (params) => {
     })),
     region: immutable(await ShortText.init({
       errors: [],
-      validate: validateName,
+      validate: orgValidation.validateRegion,
       child: {
         type: 'text',
         value: getString(params.organization, 'region'),
