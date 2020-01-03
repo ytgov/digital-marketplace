@@ -517,10 +517,12 @@ export const view: View<Props> = props => {
       <Row>
         <Col className='d-flex justify-content-end pt-5'>
           <Link button className='mr-3'>Cancel</Link>
-          <LoadingButton loading={isSubmitLoading}
+          <LoadingButton
+            loading={isSubmitLoading}
             color='primary'
             symbol_={leftPlacement(iconLinkSymbol('plus-circle'))}
             onClick={() => dispatch(adt('submit', props.submitHook)) }
+            disabled={disabled || !isFormValid(state)}
           >
             Save
           </LoadingButton>
