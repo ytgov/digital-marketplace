@@ -254,12 +254,13 @@ export const update: Update<State, Msg> = ({ state, msg }) => {
             const submitHook: SubmitHook = msg.value;
             if (submitHook) { submitHook(result.value); }
             state.set('organization', result.value);
+            state = setErrors(state, {});
           } else {
             // FIXME(Jesse): This compiles, but doesn't actually work..
             dispatch(replaceRoute(adt('orgEdit' as const, {orgId: result.value.id})));
           }
         } else {
-          // TODO(Jesse): Handle errors
+          state = setErrors(state, result.value as Errors ); // TODO(Jesse): Why does this need to be cast?
         }
         return state;
       }];
@@ -364,10 +365,10 @@ export const update: Update<State, Msg> = ({ state, msg }) => {
   }
 };
 
-type SubmitHook = (org: Organization) => void | undefined;
+type SubmitHook = (org: Organization) => void;
 export interface Props extends ComponentViewProps<State, Msg> {
   disabled: boolean;
-  submitHook: SubmitHook;
+  submitHook?: SubmitHook;
 }
 
 export const view: View<Props> = props => {
@@ -518,7 +519,7 @@ export const view: View<Props> = props => {
           <LoadingButton loading={isSubmitLoading}
             color='primary'
             symbol_={leftPlacement(iconLinkSymbol('plus-circle'))}
-            onClick={() => dispatch(adt('submit', props.submitHook ))}
+            onClick={() => props.submitHook ? dispatch(adt('submit', props.submitHook)) : null }
           >
             Save
           </LoadingButton>
