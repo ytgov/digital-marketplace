@@ -1,6 +1,6 @@
 # This workflow will do a clean install of node dependencies, build the source code, and push the resulting image to the Azure Container Repository
 
-name: ACR Docker Image CI
+name: Build and Deploy to PROD
 
 on:
   workflow_dispatch
