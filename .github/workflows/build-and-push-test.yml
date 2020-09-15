@@ -7,6 +7,7 @@ on:
     branches: [ test ]
   pull_request:
     branches: [ test ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -19,6 +20,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: test
     - name: Login to ACR
       run: echo ${{ secrets.ACR_PASSWORD }} | docker login -u ${{ secrets.ACR_USERNAME }} --password-stdin ${{ secrets.ACR_URI }}
     - name: Build the latest Docker image
