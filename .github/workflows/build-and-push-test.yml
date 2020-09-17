@@ -24,9 +24,7 @@ jobs:
         ref: test
     - name: Login to ACR
       run: echo ${{ secrets.ACR_PASSWORD }} | docker login -u ${{ secrets.ACR_USERNAME }} --password-stdin ${{ secrets.ACR_URI }}
-    - name: Set the PATH_PREFIX env var
-      run: echo "::set-env name=PATH_PREFIX::test-digital-marketplace"
     - name: Build the latest Docker image
-      run: docker build . --file Dockerfile --tag ${{ secrets.ACR_URI }}/digital_marketplace_test:latest
+      run: docker build . --build-arg PATH_PREFIX=test-digital-marketplace --file Dockerfile --tag ${{ secrets.ACR_URI }}/digital_marketplace_test:latest
     - name: Push the latest Docker image
       run: docker push ${{ secrets.ACR_URI }}/digital_marketplace_test:latest
