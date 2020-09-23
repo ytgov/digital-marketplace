@@ -1,12 +1,12 @@
 import { makeDomainLogger } from 'back-end/lib/logger';
 import { console as consoleAdapter } from 'back-end/lib/logger/adapters';
 import dotenv from 'dotenv';
+import findUp from 'find-up';
 import { existsSync, mkdirSync } from 'fs';
-import { join, resolve } from 'path';
+import { dirname, join, resolve } from 'path';
 
 // export the root directory of the repository.
-// assumed the code is running via $ROOT/build/back-end/back-end/start.js
-export const REPOSITORY_ROOT_DIR = resolve(__dirname, '../../../');
+export const REPOSITORY_ROOT_DIR = dirname(findUp.sync('package.json') || '') || __dirname;
 
 // Load environment variables from a .env file.
 dotenv.config({
@@ -41,6 +41,10 @@ export const BASIC_AUTH_PASSWORD_HASH = get('BASIC_AUTH_PASSWORD_HASH', '');
 export const ORIGIN = get('ORIGIN', 'https://digital.gov.bc.ca/marketplace').replace(/\/*$/, '');
 
 export const CONTACT_EMAIL = get('CONTACT_EMAIL', 'digitalmarketplace@gov.bc.ca');
+
+export const SERVICE_TOKEN_HASH = get('SERVICE_TOKEN_HASH', '');
+
+export const SWAGGER_UI_PATH = get('SWAGGER_UI_PATH', '/docs/api');
 
 export function getPostgresUrl(): string | null {
   // *SERVICE* variables are set automatically by OpenShift.
