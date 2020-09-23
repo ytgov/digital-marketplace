@@ -1,4 +1,4 @@
-import { DEFAULT_USER_AVATAR_IMAGE_PATH, PROCUREMENT_CONCIERGE_URL } from 'front-end/config';
+import { DEFAULT_USER_AVATAR_IMAGE_PATH } from 'front-end/config';
 import { fileBlobPath, prefixPath } from 'front-end/lib';
 import { isAllowedRouteForUsersWithUnacceptedTerms, Msg, Route, State } from 'front-end/lib/app/types';
 import Footer from 'front-end/lib/app/view/footer';
@@ -458,13 +458,6 @@ const signOutLink: Nav.NavLink = {
   symbol_: leftPlacement(iconLinkSymbol('sign-out'))
 };
 
-const procurementConciergeLink: Nav.NavLink = {
-  children: 'Procurement Concierge',
-  dest: externalDest(PROCUREMENT_CONCIERGE_URL),
-  newTab: true,
-  symbol_: rightPlacement(iconLinkSymbol('external-link'))
-};
-
 function navAccountMenus(state: Immutable<State>): Nav.Props['accountMenus'] {
   const sessionUser = state.shared.session && state.shared.session.user;
   // Return standard sign-in/up links if user is not signed in.
@@ -484,9 +477,6 @@ function navAccountMenus(state: Immutable<State>): Nav.Props['accountMenus'] {
           active: !!sessionUser && state.activeRoute.tag === 'userProfile' && state.activeRoute.value.userId === sessionUser.id
         }),
         Nav.linkAccountAction(signOutLink)
-      ],
-      [
-        Nav.linkAccountAction(procurementConciergeLink)
       ]
     ]),
     desktop: Nav.authenticatedDesktopAccountMenu({
@@ -510,9 +500,6 @@ function navAccountMenus(state: Immutable<State>): Nav.Props['accountMenus'] {
         },
         {
           links: [signOutLink]
-        },
-        {
-          links: [procurementConciergeLink]
         }
       ]
     })
