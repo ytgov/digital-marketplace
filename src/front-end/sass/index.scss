@@ -51,24 +51,24 @@ $gray-900: #212529;
 // Colors.
 $white:            #ffffff;
 $black:            #000000;
-$blue:             #0C99D6;
-$blue-alt:         #17A2B8;
-$blue-alt-2:       #1e98d2;
-$blue-dark:        #003366;
-$blue-dark-alt:    #38598A;
-$blue-dark-alt-2:  #0F4C8B;
-$blue-light:       #E7EDF3;
-$blue-light-alt:   #E9F5FB;
-$blue-light-alt-2: #F4FAFD;
-$purple:           #52489C;
-$purple-light:     lighten($purple, 20);
-$yellow:           #FCBA19;
+$blue:             #0097A9;
+//$blue-alt:         #17A2B8;
+//$blue-alt-2:       #1e98d2;
+$blue-dark:        #244C5A;
+//$blue-dark-alt:    #38598A;
+//$blue-dark-alt-2:  #0F4C8B;
+$blue-light:       #BFE5EA;
+$blue-light-alt:   #D9EFF2;
+$blue-light-alt-2: #F2FAFB;
+$purple:           #512A44;
+$purple-light:     #8E7585;
+$yellow:           #F2A900;
 $red:              #DC3545;
-$green:            #2E8540;
+$green:            #28A745;
 $orange:           #FD7E14;
 
 // Bootstrap Utility colors.
-$body-color:                        $gray-900;
+$body-color:                        $black;
 $border-color:                      $gray-400;
 $nav-tabs-border-color:             $border-color;
 $nav-tabs-link-hover-border-color:  $gray-200 $gray-200 transparent;
@@ -84,12 +84,12 @@ $table-hover-bg: $blue-light-alt;
 // App Views
 $c-body-bg: $blue-dark;
 $c-nav-bg: $blue-dark;
-$c-nav-bg-alt: $blue-dark-alt;
+$c-nav-bg-alt: $black;//$blue-dark-alt;
 $c-nav-border-bottom: $yellow;
 $c-footer-bg: $blue-dark;
-$c-footer-separator: $blue-dark-alt;
+$c-footer-separator: $black;//$blue-dark-alt;
 $c-footer-border-top: $yellow;
-$c-toast-info-icon: $blue-alt;
+$c-toast-info-icon: $blue;
 $c-toast-error-icon: $red;
 $c-toast-warning-icon: $orange;
 $c-toast-success-icon: $green;
@@ -105,7 +105,7 @@ $c-dashboard-bg: $blue-light-alt-2;
 $c-opportunity-list-learn-more-bg: $blue-light-alt-2;
 $c-opportunity-list-card-hover-bg: $blue-light-alt-2;
 $c-opportunity-create-bg: $blue-light-alt-2;
-$c-opportunity-view-got-questions-icon: $blue-alt-2;
+$c-opportunity-view-got-questions-icon: $black;//$blue-alt-2;
 $c-opportunity-view-got-questions-bg: $blue-light-alt;
 $c-opportunity-view-apply-bg: $blue-light-alt;
 $c-proposal-swu-form-team-question-response-heading: $blue-dark;
@@ -113,7 +113,7 @@ $c-proposal-swu-form-scrum-master: $purple;
 $c-user-profile-permission: $purple;
 // Misc. Views
 $c-report-card-bg: $blue-light-alt;
-$c-report-card-icon-default: $blue-dark-alt-2;
+$c-report-card-icon-default: $black;//$blue-dark-alt-2;
 $c-report-card-icon-highlight: $yellow;
 $c-capability-ft-bg: $purple;
 $c-capability-pt-bg: $purple-light;
@@ -172,9 +172,9 @@ $app-utility-colors: (
 // Theme colors.
 // Bootstrap updates the theme map based on these variables,
 // so we don't need to update the map at all.
-$primary:      $blue;
+$primary:      $yellow;
 $secondary:    $gray-600;
-$info:         $blue-dark-alt-2;
+$info:         $blue-dark;
 $warning:      $orange;
 $danger:       $red;
 $success:      $green;
@@ -202,9 +202,11 @@ $theme-colors:   map-merge(
 // Other overrides.
 $border-width: 1px;
 
-$font-family-sans-serif: "BCSans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
-$font-weight-bold:       500;
+$font-family-sans-serif: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji" !default;
+$font-weight-bold:       700;
 $font-weight-bolder:     700;
+
+$headings-font-family: "Montserrat";
 
 $font-size-base: 1rem;
 $h1-font-size:   $font-size-base * 2.5;
@@ -558,7 +560,7 @@ nav.navbar .nav-link:hover {
 
 .overline {
   text-transform: uppercase;
-  font-weight: bold;
+  font-weight: $font-weight-bold;
   font-size: 10px;
   line-height: 14px;
   letter-spacing: 1.5px;

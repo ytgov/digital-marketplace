@@ -1,13 +1,1 @@
-@font-face{
-  font-family: 'BCSans';
-  font-style: normal;
-  font-weight: 400;
-  src: url(prefix-path('/fonts/BCSans/BCSans-Regular.woff2')) format('woff2'),
-       url(prefix-path('/fonts/BCSans/BCSans-Regular.woff')) format('woff');
-}
-@font-face{
-  font-family: 'BCSans';
-  font-weight: 500 700;
-  src: url(prefix-path('/fonts/BCSans/BCSans-Bold.woff2')) format('woff2'),
-       url(prefix-path('/fonts/BCSans/BCSans-Bold.woff')) format('woff');
-}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Nunito+Sans:wght@400;700&display=swap');
