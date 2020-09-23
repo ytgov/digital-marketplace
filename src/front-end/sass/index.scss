@@ -86,6 +86,8 @@ $c-body-bg: $white;
 $c-nav-bg: $white;
 $c-nav-bg-alt: $black;//$blue-dark-alt;
 $c-nav-border-bottom: $yellow;
+$c-nav-fg: $white;
+$c-nav-fg-alt: $white;
 $c-footer-bg: $gray-800;
 $c-footer-separator: $black;//$blue-dark-alt;
 $c-footer-border-top: $yellow;
@@ -130,6 +132,8 @@ $app-utility-colors: (
   'c-nav-bg': $c-nav-bg,
   'c-nav-bg-alt': $c-nav-bg-alt,
   'c-nav-border-bottom': $c-nav-border-bottom,
+  'c-nav-fg': $c-nav-fg,
+  'c-nav-fg-alt': $c-nav-fg-alt,
   'c-footer-bg': $c-footer-bg,
   'c-footer-separator': $c-footer-separator,
   'c-footer-border-top': $c-footer-border-top,
