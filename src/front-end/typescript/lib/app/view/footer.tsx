@@ -1,6 +1,6 @@
-import { CONTACT_EMAIL, PROCUREMENT_CONCIERGE_URL } from 'front-end/config';
+import { CONTACT_EMAIL } from 'front-end/config';
 import { View } from 'front-end/lib/framework';
-import Link, { AnchorProps, emailDest, externalDest, iconLinkSymbol, rightPlacement, routeDest } from 'front-end/lib/views/link';
+import Link, { AnchorProps, emailDest, externalDest, routeDest } from 'front-end/lib/views/link';
 import Separator from 'front-end/lib/views/separator';
 import React from 'react';
 import { Col, Container, Row } from 'reactstrap';
@@ -34,12 +34,6 @@ const links: AnchorProps[] = [
   {
     children: 'Contact Us',
     dest: emailDest([CONTACT_EMAIL])
-  },
-  {
-    children: 'Procurement Concierge',
-    dest: externalDest(PROCUREMENT_CONCIERGE_URL),
-    newTab: true,
-    symbol_: rightPlacement(iconLinkSymbol('external-link'))
   }
 ];
 

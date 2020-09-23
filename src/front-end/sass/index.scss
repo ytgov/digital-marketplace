@@ -52,11 +52,8 @@ $gray-900: #212529;
 $white:            #ffffff;
 $black:            #000000;
 $blue:             #0097A9;
-//$blue-alt:         #17A2B8;
-//$blue-alt-2:       #1e98d2;
+$blue-alt:         #59BBC7;
 $blue-dark:        #244C5A;
-//$blue-dark-alt:    #38598A;
-//$blue-dark-alt-2:  #0F4C8B;
 $blue-light:       #BFE5EA;
 $blue-light-alt:   #D9EFF2;
 $blue-light-alt-2: #F2FAFB;
@@ -97,10 +94,10 @@ $c-toast-warning-icon: $orange;
 $c-toast-success-icon: $green;
 $c-sidebar-instructional-bg: $blue-light-alt-2;
 $c-sidebar-menu-link-inactive-fg: $blue;
-$c-sidebar-menu-link-inactive-icon: $blue-dark-alt-2;
-$c-sidebar-menu-link-active-fg: $white;
-$c-sidebar-menu-link-active-icon: $blue;
-$c-sidebar-menu-link-active-bg: $blue-dark-alt-2;
+$c-sidebar-menu-link-inactive-icon: $blue-dark;
+$c-sidebar-menu-link-active-fg: $black;
+$c-sidebar-menu-link-active-icon: $blue-dark;
+$c-sidebar-menu-link-active-bg: $blue-alt;
 $c-sidebar-menu-mobile-caret: $white;
 // Pages
 $c-landing-role-heading: $blue-dark;
@@ -222,8 +219,6 @@ $font-family-sans-serif: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Sego
 $font-weight-bold:       700;
 $font-weight-bolder:     700;
 
-$headings-font-family: "Montserrat";
-
 $font-size-base: 1rem;
 $h1-font-size:   $font-size-base * 2.5;
 
@@ -238,6 +233,11 @@ $border-radius:    0.3em;
 $border-radius-lg: 0.5rem;
 
 $enable-validation-icons: false;
+
+// Theme Instance Overrides
+
+$headings-font-family: "Montserrat";
+$headings-font-weight: 700;
 
 // Custom variables.
 
@@ -916,4 +916,17 @@ nav.navbar .nav-link:hover {
       }
     }
   }
+}
+
+// Theme Instance Overrides
+
+.main-nav-top-navbar {
+  .nav-title,
+  .transition-indicator {
+    margin-top: 18px;
+  }
+}
+
+.btn[class*=btn-outline]:not(.btn-outline-white):not(.btn-outline-c-nav-fg-alt):not(:hover):not(:focus):not(:active) {
+  color: $body-color;
 }

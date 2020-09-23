@@ -43,7 +43,7 @@ import * as PageUserList from 'front-end/lib/pages/user/list';
 import * as PageUserProfile from 'front-end/lib/pages/user/profile';
 import { ThemeColor } from 'front-end/lib/types';
 import Icon, { AvailableIcons } from 'front-end/lib/views/icon';
-import Link, { externalDest, iconLinkSymbol, imageLinkSymbol, leftPlacement, rightPlacement, routeDest } from 'front-end/lib/views/link';
+import Link, { iconLinkSymbol, imageLinkSymbol, leftPlacement, routeDest } from 'front-end/lib/views/link';
 import { compact } from 'lodash';
 import { default as React } from 'react';
 import { Modal, ModalBody, ModalFooter, ModalHeader, Toast, ToastBody } from 'reactstrap';
