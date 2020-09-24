@@ -1,9 +1,9 @@
-import { CONTACT_EMAIL } from 'front-end/config';
 import { View } from 'front-end/lib/framework';
 import Link, { AnchorProps, emailDest, externalDest, routeDest } from 'front-end/lib/views/link';
 import Separator from 'front-end/lib/views/separator';
 import React from 'react';
 import { Col, Container, Row } from 'reactstrap';
+import { CONTACT_EMAIL } from 'shared/config';
 import { adt } from 'shared/lib/types';
 
 const links: AnchorProps[] = [
