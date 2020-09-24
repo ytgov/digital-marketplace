@@ -65,15 +65,15 @@ export const styles: Styles = (() => {
       borderRadius: px(scale(0.25))
     },
     colors: {
-      logoBackground: '#003366',
+      logoBackground: '#e9ecef',
       bodyBackground: '#fff',
-      linkText: '#0c99d6',
-      buttonPrimaryText: '#fff',
-      buttonPrimaryBackground: '#0c99d6',
+      linkText: '#0097a9',
+      buttonPrimaryText: '#000',
+      buttonPrimaryBackground: '#f2a900',
       buttonInfoText: '#fff',
-      buttonInfoBackground: '#0f4c8b',
+      buttonInfoBackground: '#244c5a',
       buttonSuccessText: '#fff',
-      buttonSuccessBackground: '#2E8540',
+      buttonSuccessBackground: '#28a745',
       buttonDangerText: '#fff',
       buttonDangerBackground: '#dc3545'
     }
