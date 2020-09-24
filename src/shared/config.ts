@@ -6,4 +6,4 @@ export const VENDOR_IDP_SUFFIX = 'github';
 
 export const CWU_MAX_BUDGET = 50000;
 
-export const SWU_MAX_BUDGET = 2000000;
+export const SWU_MAX_BUDGET = 50000;
