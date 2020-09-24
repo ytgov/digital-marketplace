@@ -21,6 +21,6 @@ jobs:
     - name: Login to ACR
       run: echo ${{ secrets.ACR_PASSWORD }} | docker login -u ${{ secrets.ACR_USERNAME }} --password-stdin ${{ secrets.ACR_URI }}
     - name: Build the latest Docker image
-      run: docker build . --build-arg PATH_PREFIX=test-digital-marketplace --file Dockerfile --tag ${{ secrets.ACR_URI }}/digital_marketplace_prod:latest
+      run: docker build . --build-arg PATH_PREFIX=digital-marketplace --file Dockerfile --tag ${{ secrets.ACR_URI }}/digital_marketplace_prod:latest
     - name: Push the latest Docker image
       run: docker push ${{ secrets.ACR_URI }}/digital_marketplace_prod:latest
