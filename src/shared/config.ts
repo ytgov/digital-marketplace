@@ -1,4 +1,4 @@
-export const CONTACT_EMAIL = 'digitalmarketplace@gov.bc.ca';
+export const CONTACT_EMAIL = 'TBD';
 
 export const GOV_IDP_SUFFIX = 'idir';
 
@@ -11,14 +11,14 @@ export const SWU_MAX_BUDGET = 50000;
 export const COPY = {
   gov: {
     name: {
-      short: 'B.C. Government',
-      long: 'Government of British Columbia'
+      short: 'Yukon Government',
+      long: 'Government of Yukon'
     }
   },
   region: {
     name: {
-      short: 'B.C.',
-      long: 'British Columbia'
+      short: 'Yukon',
+      long: 'Yukon'
     }
   }
 };
