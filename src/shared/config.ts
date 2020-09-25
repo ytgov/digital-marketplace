@@ -1,4 +1,4 @@
-export const CONTACT_EMAIL = 'TBD';
+export const CONTACT_EMAIL = 'ryan.agar@gov.yk.ca';
 
 export const GOV_IDP_SUFFIX = 'idir';
 
