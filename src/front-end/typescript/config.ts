@@ -10,7 +10,7 @@ export const PATH_PREFIX = process.env.PATH_PREFIX || '';
 // HARDCODED CONFIG
 export const SOURCE_CODE_URL = 'https://github.com/realfolk/ykgov_digital-marketplace';
 
-export const DEFAULT_LOCATION = 'Victoria';
+export const DEFAULT_LOCATION = 'Whitehorse';
 
 export const FORM_FIELD_DEBOUNCE_DURATION = 500;
 
