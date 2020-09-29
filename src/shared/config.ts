@@ -2,7 +2,13 @@ export const CONTACT_EMAIL = 'ryan.agar@gov.yk.ca';
 
 export const GOV_IDP_SUFFIX = 'azure-ad';
 
+export const GOV_IDP_NAME = 'IDIR';
+
 export const VENDOR_IDP_SUFFIX = 'github';
+
+export const VENDOR_IDP_NAME = 'GitHub';
+
+export const TIMEZONE = 'America/Vancouver';
 
 export const CWU_MAX_BUDGET = 50000;
 
