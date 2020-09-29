@@ -2,7 +2,7 @@ export const CONTACT_EMAIL = 'ryan.agar@gov.yk.ca';
 
 export const GOV_IDP_SUFFIX = 'azure-ad';
 
-export const GOV_IDP_NAME = 'IDIR';
+export const GOV_IDP_NAME = 'YNET';
 
 export const VENDOR_IDP_SUFFIX = 'github';
 
