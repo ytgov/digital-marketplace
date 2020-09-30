@@ -37,6 +37,33 @@ Note that each log must include a version number that has either an incremented 
 
 ## Versions
 
+### 2020-09-30
+
+- Version Number: 1.3
+- Commit Hash: 68c01690401840e0ba169f6edb31d7da2071c740
+
+#### Changes
+
+- Rename the configuration variable `MAILER_NOREPLY` to `MAILER_REPLY` for better semantics.
+- Allow `MAILER_REPLY` to be set via the environment.
+
+### 2020-09-29
+
+- Version Number: 1.2
+- Commit Hash: 2d8edad5bc80e9414bc8d0da22bf54f10dfe65ff
+
+#### Changes
+
+- Abstract the following configuration variables to `shared/config.ts`.
+  - GOV_IDP_NAME
+  - VENDOR_IDP_NAME
+- Abstract the default opportunity location as a configuration variable to `front-end/typescript/config.ts`.
+- Fix broken opportunity link when editing a CWU proposal.
+- Update placement of SWU export proposal links.
+- Fix retrieval of admin users when signing in.
+- Fix bug in phase validation.
+- Add organization resource API documentation.
+
 ### 2020-09-25
 
 - Version Number: 1.1
