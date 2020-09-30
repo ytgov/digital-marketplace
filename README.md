@@ -70,6 +70,10 @@ The server uses OpenID Connect to authenticate users with a Keycloak server (man
 
 CRUD resources are created in a standardised, type-safe way in this project. CRUD abstractions are located in `src/back-end/lib/crud.ts`, and it is recommended to review this module prior to extending the API.
 
+#### Email Notifications
+
+Email notifications are all rendered server-side using React's static HTML renderer. Stub versions of all email notifications can be viewed by authenticated admin users at `{HOST}/admin/email-notification-reference` in your browser.
+
 ### Shared (`src/shared`)
 
 The `src/shared` folder contains modules that expose types and functions that are used across the entire stack: front-end and back-end.
@@ -232,6 +236,7 @@ Environment variables that affect the back-end server's functionality are stored
 | `SERVICE_TOKEN_HASH` | A hashed token used to control access to service API endpoints that are only enabled in development and test environments. Defining the variable will enable service endpoints that can be used to override user accounts and sessions. |
 | `SWAGGER_ENABLE` | A flag to enable the Swagger UI API documentation under `SWAGGER_UI_PATH`. Defaults to `false`.
 | `SWAGGER_UI_PATH` | The base path to run the Swagger UI under for serving of API documentation. Defaults to `/docs/api`. |
+| `TZ` | Time-zone to use for the back-end. Required by the Linux OS that runs the back-end, but not used as application configuration. |
 
 #### Front-End Environment Variables
 
