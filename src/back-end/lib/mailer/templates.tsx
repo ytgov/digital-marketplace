@@ -65,7 +65,7 @@ export const styles: Styles = (() => {
       borderRadius: px(scale(0.25))
     },
     colors: {
-      logoBackground: '#e9ecef',
+      logoBackground: '#fff',
       bodyBackground: '#fff',
       linkText: '#0097a9',
       buttonPrimaryText: '#000',
