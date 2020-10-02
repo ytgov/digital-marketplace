@@ -25,7 +25,7 @@ jobs:
     - name: Login to ACR
       run: echo ${{ secrets.ACR_PASSWORD }} | docker login -u ${{ secrets.ACR_USERNAME }} --password-stdin ${{ secrets.ACR_URI }}
     - name: Build the new Docker image and uniquely tag
-      run: docker build . --build-arg PATH_PREFIX=test-digital-marketplace --file Dockerfile --tag ${{ secrets.ACR_URI }}/digital_marketplace_test:${{ github.sha }} --tag ${{ secrets.ACR_URI }}/digital_marketplace_test:latest
+      run: docker build . --build-arg PATH_PREFIX=test-digital-marketplace --file Dockerfile --tag ${{ secrets.ACR_URI }}/digital_marketplace_test:${{ github.sha }}
     - name: Push the new Docker image
       run: docker push ${{ secrets.ACR_URI }}/digital_marketplace_test:${{ github.sha }}
     - name: Tag latest
