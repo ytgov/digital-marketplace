@@ -23,7 +23,7 @@ jobs:
     - name: Build the new Docker image and uniquely tag
       run: docker build . --build-arg PATH_PREFIX=digital-marketplace --file Dockerfile --tag ${{ secrets.ACR_URI }}/digital_marketplace_prod:${{ github.sha }}
     - name: Push the new Docker image
-      run: docker push ${{ secrets.ACR_URI }}/digital_marketplace_prod:latest
+      run: docker push ${{ secrets.ACR_URI }}/digital_marketplace_prod:${{ github.sha }}
     - name: Tag latest
       run: docker tag ${{ secrets.ACR_URI }}/digital_marketplace_prod:${{ github.sha }} ${{ secrets.ACR_URI }}/digital_marketplace_prod:latest
     - name: Push latest
