@@ -4,7 +4,7 @@ Will you be submitting a proposal for this opportunity as an Individual or Organ
 
 ### As an Individual:
 
-You will be required to provide your contact information that may be used by the BC Government to form a contract. This includes: Legal Name, Email Address, Phone Number, Street Address - including City, Province, Postal Code and Country.
+You will be required to provide your contact information that may be used by the Yukon Government to form a contract. This includes: Legal Name, Email Address, Phone Number, Street Address - including City, Province, Postal Code and Country.
 
 ### As an Organization:
 
