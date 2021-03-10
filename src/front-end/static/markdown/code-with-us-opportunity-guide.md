@@ -1,9 +1,9 @@
-Before you begin developing your opportunity it in important that you are aware of the following requirements and restrictions:
+Before you begin developing your opportunity it is important that you are aware of the following requirements and restrictions:
 
-- Code With Us is for opportunities up to, but not exceeding, $70,000.
+- Code With Us is for opportunities up to, but not exceeding, $50,000.
 - Code With Us is for a specific deliverable. You must be able to fully explain, in your opportunity, what is expected from the vendor.
 
-If you have any questions around the contracting or utilization of this procurement tool, please contact [procurementadvisory@gov.bc.ca](mailto:procurementadvisory@gov.bc.ca) for further support.
+If you have any questions around the contracting or utilization of this procurement tool, please contact [digital-marketplace@yukon.ca](mailto:digital-marketplace@yukon.ca) for further support.
 
 The Code With Us (CWU) opportunity page will require several details from you to ensure a clear and fulsome procurement with the vendor community. The following outlines the required sections and the level and kinds of detail required.
 
@@ -18,7 +18,7 @@ Remote OK? – If No – The expectation is that the vendor will be working on s
 If Yes - Remote Description – (If Yes was selected for Remote Ok?) – This identifies any caveats that may apply to a Remote work contract. Here are three options as examples:
 
 - Meet once in person every two weeks
-- Must be available in Prince George if requested
+- Must be available in Whitehorse if requested
 - No in-person required
 
 Fixed-Price Award – This section identifies the amount you are offering the vendor for completion of the project. It is important to note that with CWU, this is a fixed amount and will be paid in full to the vendor upon completion of the project or paid in a phase approach as indicated in the opportunity.
@@ -29,7 +29,7 @@ Required Skills – Here you can identify one or more skills that you require ve
 
 In this section you will provide details around the following:
 
-- Who you are? Ministry, Division, Branch. Provide the vendor with an understanding of who they will be working for.
+- Who you are? Department, Division, Branch. Provide the vendor with an understanding of who they will be working for.
 - The Background of the project. What work, if any, has been done in this space in the past? Is this a net new project, or is this a continuation of previous efforts?
 - What work are you expecting the vendor to complete? This will explain, in detail, the level of effort and the extent of work required from the vendor in order to complete the project. This will fully explain all aspects of the project and all deliverables that must be completed in order for the vendor to fulfill their responsibilities for the contract.
 
@@ -47,7 +47,7 @@ Project Submission Info – This is where you identify the method and manner of 
 
 Acceptance Criteria – The Acceptance Criteria identifies what must be delivered by the Successful vendor in order to meet the requirements of the contract. This will also identify all of the deliverables necessary in order for the vendor to receive payment for the work they have completed.
 
-Evaluation Criteria – The Evaluation Criteria explains how the government team (3+ staff/contractors) will evaluate the proposal materials submitted by the vendors. This will identify what must be submitted and how it will be evaluated. If you are unclear on these materials, or would like support in their development, please contract [digitalmarketplace@gov.bc.ca](mailto:digitalmarketplace@gov.bc.ca).
+Evaluation Criteria – The Evaluation Criteria explains how the government team (3+ staff/contractors) will evaluate the proposal materials submitted by the vendors. This will identify what must be submitted and how it will be evaluated. If you are unclear on these materials, or would like support in their development, please contract [digital-marketplace@yukon.ca](mailto:digital-marketplace@yukon.ca).
 
 ## The Attachments Tab
 
