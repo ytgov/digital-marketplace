@@ -1,53 +1,93 @@
-1. The Digital Marketplace (the “Service”) is offered to developers who wish to bid on “Code with Us” or “Sprint With Us” opportunities (a “Bidder”). The Service is offered by the Province of British Columbia and on behalf of public sector entities that use the Digital Marketplace (referred to below as the “Province”, or “We”, “Us” or “Our”, as the context requires).
+**Please read the following Terms of Service (“Agreement”) carefully.** In consideration for accessing and using Government of Yukon “Digital Marketplace website” (“YG Site”) and any procurement and contracting materials, documents, and information contained therein (collectively, the “Procurement Site and Materials”), the sufficiency of which you hereby acknowledge and accept, you agree to the following terms:  
 
-2. Access to and use of the Service is provided subject to these terms and conditions. The Bidder agrees to use the Service in accordance with these terms and conditions and other policies as the Province may communicate to the Bidder from time to time (the “Agreement”). 
+1. For the purposes of this Agreement, “you” and “your” (whether capitalized or not) means and includes: you; your employer and its successors and assigns; your partners; your employees or subcontractors; and any other person or corporation for whom you act as representative or agent in accessing or using the Procurement Site and Materials. You represent and warrant that you have full power and authority to enter into, perform, and execute this Agreement on behalf of each person or party above. 
 
-3. An individual account on GitHub is required in order sign up for an individual profile on the Service. An individual profile is required in order to create an organization profile on the Service. Bidders must sign up for either an individual or an organization profile on the Service, as required by the applicable opportunity, in order to submit bids. Unless bids, proposals or other communications are associated with either an organization or individual profile, as applicable, they will not be considered or evaluated.
+2. You must be registered with the YG Site to be notified of procurement opportunities and any addenda/addendum for such procurements listed on the YG Site.You are solely responsible for ensuring that your registration information is complete, current, and accurate at all times, and you are solely responsible for the security of the password used by you to access the Procurement Site and Materials. If you have lost or forgotten your password, it is your sole responsibility to reset your password. 
 
-4. Through the registration process on the Digital Marketplace, the individual’s name, email address, address, and telephone number (all of which may be “Personal Information”) is being collected by the Ministry of Citizens’ Services for the purposes of registering you, and any related organization, to become a potential Bidder on the Service. This information is being collected pursuant to section 26(c) of the Freedom of Information and Protection of Privacy Act (British Columbia) for the purposes stated above and any questions concerning the collection of your Personal Information may be directed to: Zachary Woodward, Senior Director Procurement, 563 Superior St, Victoria, BC V8V 0C5, Phone: 250-208-7482.
+3. You are solely responsible for checking the YG Site often to review any open procurement opportunities at any stage.  
 
-5. The Bidder agrees that signing up for a profile and using that profile to submit a bid is as effective as a signature and indicates its agreement to be bound by the statements and representations to which that profile is affixed.
+4. Any response to or submission on any YG procurement at any stage, including, without limitation: any bids, proposals, or other responses and the information contained therein (collectively, “Reponses”), must be in accordance with the terms and requirements of the Procurement Site and Materials. Responses that fail to comply with the terms and requirements of the Procurement Site and Materials may be rejected or deemed unacceptable by YG. 
 
-6. We are under no obligation to confirm or verify the actual identity or authority of any user of the profile. The Bidder authorizes Us to accept, without further verification, all activities and communications that use the Bidder’s profile.
+5. Amendments to procurement documents will be posted to the YG Site in the form of Addenda/Addendum.  You are solely and unequivocally responsible for ensuring that you have checked the YG Site and reviewed and downloaded all Addenda/Addendum related to a YG procurement prior to and after submission of any Response, regardless of whether you have been notified of the Addenda/Addendum or information contained therein by alternative means or by YG or its staff. Failure to acknowledge Addenda/Addendum on any Response to a procurement may result in the Response being deemed non-compliant, incomplete, unacceptable, or rejected by YG.  
 
-7. The Bidder agrees that if the Bidder’s profile is invalid at any applicable closing times or dates regardless of when received by Us, then any bids, proposals or other communications that the profile is associated with will not be considered or evaluated.
+6. You acknowledge and agree that the timing of any Response submitted electronically is based on when the Response is RECEIVED by the Digital Marketplace Bidding System, not when a Response is submitted by you, and that transmission of a Response submitted electronically can be delayed in an "Internet Traffic Jam" due to file transfer size, transmission speed, etc.   A Response will only be considered to have been submitted once it has been RECEIVED by the Digital Marketplace Bidding System and a confirmation email from such system is received by you, confirming receipt of the electronic Response, regardless of when the Response was submitted by you. You are solely responsible for allowing sufficient time to upload your Response electronically and any other materials and attachments (if applicable) and to resolve any issues that may arise.  The web clock closing time and date for any and all electronic Responses submitted through the Digital Marketplace Bidding System shall be determined by the Digital Marketplace Bidding System web clock, and such clock shall be deemed correct as to the date and time of receipt of electronic Responses submitted through the Digital Marketplace Bidding System. 
 
-8. The Bidder agrees that the Service may attach an electronic time and/or date stamp (“Stamp”) to bids, proposals or other communications when those bids, proposals or communications have been received by Us. When so attached, the Bidder agrees that the Stamp will determine the time and date that the bid, proposal or other communication was received by Us.
+7. YG is not responsible or liable in any way or for any reason for failure to receive or misdirected notices of procurements or Addenda/Addendum which may result from registered users who fail to update their contact information. 
 
-9. The Bidder is liable for all use of its profile, including use by any individual whether with or without the Bidder’s knowledge or consent.
+8. You accept the Procurement Site and Materials “as is” and use of the Procurement Site and Materials is solely at your own risk. When using the Procurement Site and Materials, you are solely responsible for confirming the content, veracity, accuracy, availability, suitability, reliability, usability, functionality, compliance, completeness, and timeliness of your Response and the Procurement Site and Materials. 
 
-10. The Bidder will not attempt to defeat or compromise the security related to the Service.
+9. YG makes NO guarantees, warranties or representations in any way (express or implied) with respect to the accuracy, availability, suitability, reliability, usability, functionality, completeness or timeliness of the Procurement Site and Materials for any purpose, including, without limitation: implied warranties for merchantability, fitness for a particular purpose, and non-infringement of rights. All Responses are subject to further review and acceptance by YG. YG does NOT make any representation or warranty, express or implied, with respect to: whether a Response will be accepted; the content, veracity, accuracy, availability, suitability, reliability, usability, functionality, compliance, completeness or timeliness of Responses; or whether a contract or work will be awarded/provided. It should not be assumed that the lowest priced or highest ranked Response recorded on the YG Site will be awarded a contract. 
 
-11. The Bidder is responsible for ensuring that its profile registration and other contact information is complete and accurate, and is kept current. 
+10. **EXCLUSION OF LIABILITY:** In consideration for access to and use of the Procurement Site and Materials, you fully and irrevocably agree to FULLY RELEASE, REMISE, WAIVE and FOREVER DISCHARGE YG, its elected officials, officers, employees, partners, agents, insurers, successors and assigns from any and all claims, liabilities, actions, proceedings (including any judicial review or injunction application), damages (including: direct, indirect, consequential, incidental, general, special or exemplary damages, any economic losses, lost  profits, lost opportunities, or all other costs, expenses and losses of any type or for any reason), or any other legal remedy in any way or for any reason, whether unknown or unforeseen, whether in law or in equity or pursuant to statute or regulation (collectively, the “Claims”) arising from, related to, or in any way connected to your access to or use of the Procurement Site and Materials, including, without limitation: the content, veracity, accuracy, availability, suitability, reliability, usability, functionality, compliance, completeness or timeliness of Responses or the Procurement Site and Materials; any failure to receive, transmit, download, or use Addenda/Addendum and any procurement and contracting materials, documents, and information related to or arising from the Procurement Site and Materials; any change to, suspension of, or termination of access to or use of the Procurement Site and Materials; any breach of any express or implied obligation, duty, or terms on the part of YG at any stage of the procurement process or related to the use of the Procurement Site and Materials; the receipt, rejection, or evaluation of any Responses; any breach of YG’s policies or directives; any breach of a statutory or other duty; negligence, misrepresentation (negligent or otherwise), or any other tort; bad faith or violation of common law duties; breach of contract; or any decisions, acts, omissions or errors by YG, its elected officials, officers, employees, partners, agents, insurers, successors and assigns related to or arising from the Procurement Site and Materials.  
 
-12. All information provided to the Province is subject to the Freedom of Information and Protection of Privacy Act. We will only use the information for purposes related to the Service.
+11. **LIMITATION OF LIABILITY:** If section 10 above is inapplicable, unconscionable, contrary to public policy, or otherwise unenforceable or invalid for any reason, in whole or in part, or where you are otherwise entitled to a remedy or compensation at common law or otherwise for any reason in relation to the Procurement Site and Materials, you acknowledge and agree that the sole and absolute remedy and total maximum compensation for any and all Claims against the Owner in relation to or arising from the Procurement Site and Materials, either individually or cumulatively, will not exceed the lesser of: your reasonable and direct costs of preparing your Response or $5000.00, and in no way or for any reason shall YG be liable to you for an amount greater than this amount. Multiple claims will not enlarge this limit. This clause shall survive the expiry, cancellation, or termination of this Agreement. 
 
-13. We retain the copyright on all information made available to the Bidder through the Service and the Digital Marketplace Web site.
+12. You acknowledge and agree that the Procurement Site and Materials may be interrupted or unavailable at times due to technical issues, maintenance, or for other reasons.  
 
-14. The Province may post the Bidder’s identity online if it is the successful bidder with regard to a specific bid opportunity.
+13. YG may, in its sole and absolute discretion, change, suspend, or terminate access to or use of the Procurement Site and Materials at any time without prior notice to you. In the case of a computer virus or other malicious electronic code that, in the sole opinion of YG is considered harmful to YG’s computer networks, YG reserves the right to take whatever actions it deems necessary to rectify, mitigate, or neutralize the computer virus or other malicious electronic code, including, without limitation: discontinuing access to or use of the Procurement Site and Materials at any time or deleting or modifying any electronic transmission or submission made by you. In such a case, YG will not be liable in any way for any failure to receive your electronic submission or changes that may occur to the electronic transmission submitted by you, including, without limitation: rendering such transmission unreadable, non-compliant, rejected or unacceptable in any way because of such actions above.  
 
-15. The Bidder should not rely on the Service as its exclusive method of submitting bids, proposals or other communications to Us. For example, there may be technical issues that affect the provision of the Service and, because the Service is provided over the Internet, the Bidder’s communications to Us may be susceptible to data corruption and/or delays in transmission.
+14. YG may, at its sole discretion, change the terms and conditions of this Agreement from time to time without notice to you. It is your responsibility to review this Agreement to satisfy yourself that you continue to agree to the terms and conditions set out in this Agreement or any amendment thereof. 
 
-16. **The Service is provided “AS IS” without warranty of any kind, including warranty of fitness for a particular purpose. We do not warrant the accuracy or the completeness of the Service or the information made available to the bidder by the Service, or that the Service will function without error, failure or interruption.**
+15. You represent, warrant, and agree that you will not:  
 
-17. **No action may be brought by any person against Us for any loss or damage of any kind caused by any reason or purpose including, without limitation, reliance on the functioning of the Service.**
+    a.) use, reproduce, distribute, publish, or communicate the Procurement Site and Materials for any reason other than to obtain information and submit on procurement opportunities authorized or issued by YG, unless you have obtained the express prior written approval of YG; 
 
-18. The Bidder agrees to indemnify and saves harmless Us, and Our respective servants, agents, directors, contractors, and employees (each an “Indemnified Person”) against any and all losses, claims, damages, actions, causes of action, costs and expenses that an lndemnified Person may sustain, incur, suffer, or be put to by reason of the Bidder’s (or any of the Bidder’s servants, agents, directors, contractors and employees’s) use of the Service or violation of this Agreement. 
+    b.) conduct anti-competition, illegal, unlawful activities; 
 
-18. The Bidder will not, without the prior written consent of the Province, assign or transfer this Agreement or any of its rights under this Agreement. 
+    c.) provide false or inaccurate information or misrepresent any personal or corporate information regarding your identity or intentions with respect to any matter; 
 
-19. The Bidder will keep its profile log information confidential and, except where the Bidder is an organization and the use of the profile is by an individual authorized to act on behalf of the Bidder, will not assign or permit its profile to be used by any other person, whether or not such other person is in any way related to the Bidder. 
+    d.) post, publish, transmit, distribute, or upload any information and materials through or link directly or indirectly any information or materials to the YG Site that will harm YG or its officers and employees; 
 
-20. The Province may terminate this Agreement, thereby invalidating the Bidder’s organization or individual profile: 
+    e.) send a computer virus or any other harmful software code intended to damage, detrimentally interfere with, expropriate any system, data or personal information;  
 
-	(a) immediately if, in the Province’s sole discretion, the Bidder has breached or appears to have breached a term of this Agreement, or
+    f.) violate copyright, trademark or any other proprietary intellectual property rights of others; and 
 
-	(b) upon giving at least 3 business days’ prior written notice of termination to the Bidder for any other reason (where “business day” means a business day of the Province).
+    g. ) YG retains and reserves all copyright and intellectual property rights in the procurement information, documents, illustrations, and materials created or issued by YG or posted on the YG Site. 
 
-21. The Province may discontinue the Service at any time and without any obligation to give notice of discontinuance to the Bidder. 
+16. The collection, use, disclosure, retention, and disposal of information collected by YG via the Procurement Site and Materials and Responses is done in accordance with Yukon’s Access to Information and Privacy Protection Act RSY 2002, c. 1 (“ATIPP”) and the Archives Act RSY 2002, c. 9. For the purposes of this Agreement, “personal information” has the same definition as “personal information” under ATIPP. Any personal information will be collected and used in accordance with the purposes stated in this Agreement by YG and its officers, employees, consultants or authorized representatives. 
 
-22. Bidders with existing profiles on the Service will be notified by the Province of this Agreement. Continued use of the Service following such notice constitutes the Bidder’s acceptance of the Agreement.
+17. You acknowledge and agree to the following terms in order to access and use the Procurement Site and Materials: 
+ 
+a.) you fully consent to and authorize YG to collect, use, store, and disclose any Responses and any information contained therein, personal information, and any other information and materials provided or submitted by you on, through, or related to the Procurement Site and Materials for government purposes, including, without limitation:  
+  
+  i.) operation, maintenance, updating, and administration of the Procurement Site and Materials, including, without limitation: registration or compilation of a Plan Takers list, and publishing information from a Response to the public, including: names, pricing or amounts contained in Responses, bid security or bonding information; 
+  
+  ii.) government policy and procurement planning, programming, including, but not limited to: statistical and data compilation, analysis and reporting and vendor performance evaluation; 
 
-23. The Province may amend this Agreement at any time by providing notice to the Bidder of the amended Agreement to the email address associated with the Bidder’s account. Continued use of the Service after such notice constitutes the Bidder’s acceptance of the amended Agreement.
+  iii.) sending notices and updates related to procurement opportunities, events, conferences, trade shows, training, and procurement or contracting related news and updates from YG;  
 
-24. This Agreement is governed by and is to be construed in accordance with the laws of British Columbia.
+  iv.) to inform you of changes to the Procurement Site and Materials or to resolve disputes; 
+
+  v.) to detect and protect the process related to the Procurement Site and Materials and YG, and its officers and staff, against error, fraud, or illegal activity; 
+
+  vi.) to enforce this Agreement; 
+
+  vii.) for the purposes of compliance or clarification of a Response; 
+
+  viii.) for the purposes of the procurement process, including, but not limited to: evaluation and  award of a contract;  
+
+  ix.) for any other government purpose as otherwise described to you in the Procurement Site and Materials. 
+
+18. Specific questions or inquiries relating to: these terms of service; the collection, use, and disclosure of personal information; or withdrawal of consent to receive notices or updates related to or arising from the Procurement Site and Materials can be directed to: 
+
+Attention: Procurement Support Officer 
+Procurement Support Centre 
+Box 2703 (W-3C) 
+Whitehorse, Yukon, Y1A 2Z5              
+Email: contracts@gov.yk.ca              Phone: (867) 667-5385 
+
+19. YG may, in its sole and absolute discretion, prohibit you from accessing or using the Procurement Site and Materials or prohibit you from submitting a Response, or reject a Response that has been prohibited. 
+
+20. This Agreement will be deemed to have been made in and will be governed, interpreted and enforced by the laws of the Yukon without regard to conflict of law principles that would impose a law of another jurisdiction, and you irrevocably submit to the exclusive jurisdiction of the courts in Yukon.   
+
+21. Each term of this Agreement will be valid and enforceable to the fullest extent permitted by law.  If any provision of this Agreement is held to be invalid, unenforceable or illegal to any extent, such provision may be severed and such invalidity, unenforceability or illegality will not prejudice or affect the validity, enforceability and legality of the remaining provisions of this Agreement.  If any such term of this Agreement is held to be invalid, unenforceable or illegal, the parties will promptly endeavor in good faith to negotiate new terms to eliminate such invalidity, unenforceability, or illegality and to restore this Agreement as nearly as possible to its original intent and effect.  
+
+22. No action or failure to act by YG shall constitute a waiver of any right or duty afforded to YG under the Agreement, nor shall any such action or failure to act constitute an approval of or acquiescence of any breach thereunder, except as may be specifically and explicitly agreed to in writing by YG.  
+
+23. You shall execute such further documents and give such further assurances as are reasonably required to give effect to this Agreement.  
+
+24. Nothing in this Agreement shall create the relationship of principal and agent, employer and employee, partnership, or joint venture between you and YG.  
+
+25. The terms and conditions set out in this Agreement are the entire agreement between you and YG relating to your access and use of the Procurement Site and Materials, and supersedes all previous communications, representations, negotiations, understandings and other agreements, whether oral or written, between the parties. Where a conflict exists between this Agreement and any other terms of service related to or arising from the YG Site, these terms of service shall govern. 
+
+26. You have read this Agreement thoroughly and fully understand its terms, and acknowledge and agree that by clicking the “YES” button you are fully accepting and agreeing to the terms of this Agreement, and this will be deemed equivalent to affixing an electronic signature for the purposes of this Agreement and the Electronic Commerce Act, RSY 2002, c. 66. 
