@@ -3,9 +3,13 @@ import { makeStartLoading, makeStopLoading } from 'front-end/lib';
 import router from 'front-end/lib/app/router';
 import { isAllowedRouteForUsersWithUnacceptedTerms, Msg, Route, State } from 'front-end/lib/app/types';
 import * as Nav from 'front-end/lib/app/view/nav';
-import { Dispatch, Immutable, initAppChildPage, newRoute, PageModal, Update, updateAppChildPage, updateComponentChild } from 'front-end/lib/framework';
+import * as AcceptNewTerms from 'front-end/lib/components/accept-new-app-terms';
+import { Dispatch, immutable, Immutable, initAppChildPage, newRoute, Update, updateAppChildPage, updateComponentChild } from 'front-end/lib/framework';
 import * as api from 'front-end/lib/http/api';
-import * as PageContent from 'front-end/lib/pages/content';
+import * as PageContentCreate from 'front-end/lib/pages/content/create';
+import * as PageContentEdit from 'front-end/lib/pages/content/edit';
+import * as PageContentList from 'front-end/lib/pages/content/list';
+import * as PageContentView from 'front-end/lib/pages/content/view';
 import * as PageDashboard from 'front-end/lib/pages/dashboard';
 import * as PageLanding from 'front-end/lib/pages/landing';
 import * as PageLearnMoreCWU from 'front-end/lib/pages/learn-more/code-with-us';
@@ -53,6 +57,13 @@ function setSession(state: Immutable<State>, validated: api.ResponseValidation<S
 const startTransition = makeStartLoading<State>('transitionLoading');
 const stopTransition = makeStopLoading<State>('transitionLoading');
 
+const startAcceptNewTermsLoading = makeStartLoading<State>('acceptNewTermsLoading');
+const stopAcceptNewTermsLoading = makeStopLoading<State>('acceptNewTermsLoading');
+
+/**
+ * Give precedence to app modals over page modals.
+ */
+
 async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route: Route): Promise<Immutable<State>> {
   const defaultPageInitParams = {
     state,
@@ -60,12 +71,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
     routePath: router.routeToUrl(route),
     getSharedState(state: Immutable<State>) {
       return state.shared;
-    },
-    setModal(state: Immutable<State>, modal: PageModal<Msg>) {
-      state = state.setIn(['modal', 'open'], !!modal);
-      return modal
-        ? state.setIn(['modal', 'content'], modal)
-        : state;
     }
   };
 
@@ -78,7 +83,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageOrgEdit.component.init,
         childGetMetadata: PageOrgEdit.component.getMetadata,
-        childGetModal: PageOrgEdit.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageOrgEdit' as const, value };
         }
@@ -91,7 +95,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageOrgSWUTerms.component.init,
         childGetMetadata: PageOrgSWUTerms.component.getMetadata,
-        childGetModal: PageOrgSWUTerms.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageOrgSWUTerms' as const, value };
         }
@@ -104,7 +107,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageProposalSWUEdit.component.init,
         childGetMetadata: PageProposalSWUEdit.component.getMetadata,
-        childGetModal: PageProposalSWUEdit.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageProposalSWUEdit' as const, value};
         }
@@ -116,7 +118,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageProposalSWUCreate.component.init,
         childGetMetadata: PageProposalSWUCreate.component.getMetadata,
-        childGetModal: PageProposalSWUCreate.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageProposalSWUCreate' as const, value};
         }
@@ -128,7 +129,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageProposalSWUView.component.init,
         childGetMetadata: PageProposalSWUView.component.getMetadata,
-        childGetModal: PageProposalSWUView.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageProposalSWUView' as const, value};
         }
@@ -141,7 +141,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageOpportunitySWUEdit.component.init,
         childGetMetadata: PageOpportunitySWUEdit.component.getMetadata,
-        childGetModal: PageOpportunitySWUEdit.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageOpportunitySWUEdit' as const, value};
         }
@@ -153,7 +152,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageOpportunitySWUCreate.component.init,
         childGetMetadata: PageOpportunitySWUCreate.component.getMetadata,
-        childGetModal: PageOpportunitySWUCreate.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageOpportunitySWUCreate' as const, value};
         }
@@ -165,7 +163,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageOpportunitySWUView.component.init,
         childGetMetadata: PageOpportunitySWUView.component.getMetadata,
-        childGetModal: PageOpportunitySWUView.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageOpportunitySWUView' as const, value};
         }
@@ -178,7 +175,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageOpportunityCWUCreate.component.init,
         childGetMetadata: PageOpportunityCWUCreate.component.getMetadata,
-        childGetModal: PageOpportunityCWUCreate.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageOpportunityCWUCreate' as const, value};
         }
@@ -190,7 +186,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageOpportunityCWUEdit.component.init,
         childGetMetadata: PageOpportunityCWUEdit.component.getMetadata,
-        childGetModal: PageOpportunityCWUEdit.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageOpportunityCWUEdit' as const, value};
         }
@@ -202,7 +197,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageOpportunityCWUView.component.init,
         childGetMetadata: PageOpportunityCWUView.component.getMetadata,
-        childGetModal: PageOpportunityCWUView.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageOpportunityCWUView' as const, value};
         }
@@ -215,7 +209,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageProposalCWUCreate.component.init,
         childGetMetadata: PageProposalCWUCreate.component.getMetadata,
-        childGetModal: PageProposalCWUCreate.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageProposalCWUCreate' as const, value};
         }
@@ -227,7 +220,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageProposalCWUEdit.component.init,
         childGetMetadata: PageProposalCWUEdit.component.getMetadata,
-        childGetModal: PageProposalCWUEdit.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageProposalCWUEdit' as const, value};
         }
@@ -239,7 +231,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageProposalCWUView.component.init,
         childGetMetadata: PageProposalCWUView.component.getMetadata,
-        childGetModal: PageProposalCWUView.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageProposalCWUView' as const, value};
         }
@@ -251,7 +242,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageProposalCWUExportOne.component.init,
         childGetMetadata: PageProposalCWUExportOne.component.getMetadata,
-        childGetModal: PageProposalCWUExportOne.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageProposalCWUExportOne' as const, value};
         }
@@ -263,7 +253,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageProposalCWUExportAll.component.init,
         childGetMetadata: PageProposalCWUExportAll.component.getMetadata,
-        childGetModal: PageProposalCWUExportAll.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageProposalCWUExportAll' as const, value};
         }
@@ -275,7 +264,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageProposalSWUExportOne.component.init,
         childGetMetadata: PageProposalSWUExportOne.component.getMetadata,
-        childGetModal: PageProposalSWUExportOne.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageProposalSWUExportOne' as const, value};
         }
@@ -287,7 +275,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageProposalSWUExportAll.component.init,
         childGetMetadata: PageProposalSWUExportAll.component.getMetadata,
-        childGetModal: PageProposalSWUExportAll.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageProposalSWUExportAll' as const, value};
         }
@@ -299,7 +286,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageProposalList.component.init,
         childGetMetadata: PageProposalList.component.getMetadata,
-        childGetModal: PageProposalList.component.getModal,
         mapChildMsg(value) {
           return {tag: 'pageProposalList' as const, value};
         }
@@ -312,7 +298,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageOrgCreate.component.init,
         childGetMetadata: PageOrgCreate.component.getMetadata,
-        childGetModal: PageOrgCreate.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageOrgCreate' as const, value };
         }
@@ -325,7 +310,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageOrgList.component.init,
         childGetMetadata: PageOrgList.component.getMetadata,
-        childGetModal: PageOrgList.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageOrgList' as const, value };
         }
@@ -338,7 +322,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageUserProfile.component.init,
         childGetMetadata: PageUserProfile.component.getMetadata,
-        childGetModal: PageUserProfile.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageUserProfile' as const, value };
         }
@@ -351,7 +334,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageUserList.component.init,
         childGetMetadata: PageUserList.component.getMetadata,
-        childGetModal: PageUserList.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageUserList' as const, value };
         }
@@ -364,7 +346,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageLanding.component.init,
         childGetMetadata: PageLanding.component.getMetadata,
-        childGetModal: PageLanding.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageLanding' as const, value };
         }
@@ -377,7 +358,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageDashboard.component.init,
         childGetMetadata: PageDashboard.component.getMetadata,
-        childGetModal: PageDashboard.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageDashboard' as const, value };
         }
@@ -390,7 +370,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageOpportunities.component.init,
         childGetMetadata: PageOpportunities.component.getMetadata,
-        childGetModal: PageOpportunities.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageOpportunities' as const, value };
         }
@@ -403,7 +382,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageOpportunityCreate.component.init,
         childGetMetadata: PageOpportunityCreate.component.getMetadata,
-        childGetModal: PageOpportunityCreate.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageOpportunityCreate' as const, value };
         }
@@ -416,7 +394,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageLearnMoreCWU.component.init,
         childGetMetadata: PageLearnMoreCWU.component.getMetadata,
-        childGetModal: PageLearnMoreCWU.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageLearnMoreCWU' as const, value };
         }
@@ -429,22 +406,56 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageLearnMoreSWU.component.init,
         childGetMetadata: PageLearnMoreSWU.component.getMetadata,
-        childGetModal: PageLearnMoreSWU.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageLearnMoreSWU' as const, value };
         }
       });
 
-    case 'content':
+    case 'contentView':
       return await initAppChildPage({
         ...defaultPageInitParams,
-        childStatePath: ['pages', 'content'],
+        childStatePath: ['pages', 'contentView'],
         childRouteParams: route.value,
-        childInit: PageContent.component.init,
-        childGetMetadata: PageContent.component.getMetadata,
-        childGetModal: PageContent.component.getModal,
+        childInit: PageContentView.component.init,
+        childGetMetadata: PageContentView.component.getMetadata,
         mapChildMsg(value) {
-          return { tag: 'pageContent' as const, value };
+          return { tag: 'pageContentView' as const, value };
+        }
+      });
+
+    case 'contentCreate':
+      return await initAppChildPage({
+        ...defaultPageInitParams,
+        childStatePath: ['pages', 'contentCreate'],
+        childRouteParams: route.value,
+        childInit: PageContentCreate.component.init,
+        childGetMetadata: PageContentCreate.component.getMetadata,
+        mapChildMsg(value) {
+          return { tag: 'pageContentCreate' as const, value };
+        }
+      });
+
+    case 'contentEdit':
+      return await initAppChildPage({
+        ...defaultPageInitParams,
+        childStatePath: ['pages', 'contentEdit'],
+        childRouteParams: route.value,
+        childInit: PageContentEdit.component.init,
+        childGetMetadata: PageContentEdit.component.getMetadata,
+        mapChildMsg(value) {
+          return { tag: 'pageContentEdit' as const, value };
+        }
+      });
+
+    case 'contentList':
+      return await initAppChildPage({
+        ...defaultPageInitParams,
+        childStatePath: ['pages', 'contentList'],
+        childRouteParams: route.value,
+        childInit: PageContentList.component.init,
+        childGetMetadata: PageContentList.component.getMetadata,
+        mapChildMsg(value) {
+          return { tag: 'pageContentList' as const, value };
         }
       });
 
@@ -455,7 +466,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageSignIn.component.init,
         childGetMetadata: PageSignIn.component.getMetadata,
-        childGetModal: PageSignIn.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageSignIn' as const, value };
         }
@@ -468,7 +478,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageSignOut.component.init,
         childGetMetadata: PageSignOut.component.getMetadata,
-        childGetModal: PageSignOut.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageSignOut' as const, value };
         }
@@ -481,7 +490,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageSignUpStepOne.component.init,
         childGetMetadata: PageSignUpStepOne.component.getMetadata,
-        childGetModal: PageSignUpStepOne.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageSignUpStepOne' as const, value };
         }
@@ -494,7 +502,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageSignUpStepTwo.component.init,
         childGetMetadata: PageSignUpStepTwo.component.getMetadata,
-        childGetModal: PageSignUpStepTwo.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageSignUpStepTwo' as const, value };
         }
@@ -507,7 +514,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageNotice.component.init,
         childGetMetadata: PageNotice.component.getMetadata,
-        childGetModal: PageNotice.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageNotice' as const, value };
         }
@@ -520,7 +526,6 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
         childRouteParams: route.value,
         childInit: PageNotFound.component.init,
         childGetMetadata: PageNotFound.component.getMetadata,
-        childGetModal: PageNotFound.component.getModal,
         mapChildMsg(value) {
           return { tag: 'pageNotFound' as const, value };
         }
@@ -530,13 +535,7 @@ async function initPage(state: Immutable<State>, dispatch: Dispatch<Msg>, route:
 
 const update: Update<State, Msg> = ({ state, msg }) => {
   const defaultPageUpdateParams = {
-    state,
-    setModal(state: Immutable<State>, modal: PageModal<Msg> | null) {
-      state = state.setIn(['modal', 'open'], !!modal);
-      return modal
-        ? state.setIn(['modal', 'content'], modal)
-        : state;
-    }
+    state
   };
 
   switch (msg.tag) {
@@ -545,7 +544,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
 
     case '@incomingRoute':
       const incomingRoute = msg.value.route;
-      const preserveScrollPosition = msg.value.preserveScrollPosition;
       return [
         startTransition(state),
         async (state, dispatch) => {
@@ -570,12 +568,29 @@ const update: Update<State, Msg> = ({ state, msg }) => {
           if (incomingRoute.tag === 'signOut') {
             state = setSession(state, await api.sessions.readOne(CURRENT_SESSION_ID));
           }
-          // Scroll to top if not a popstate event.
-          const html = document.documentElement;
-          if (!preserveScrollPosition && html.scrollTo) { html.scrollTo(0, 0); }
+          // Scroll to correct Y position.
+          dispatch(adt('scrollTo', msg.value.routeScrollY));
           return state;
         }
       ];
+
+    case 'scrollTo':
+      return [
+        state,
+        async (state, dispatch) => {
+          document.documentElement.scrollTo(0, msg.value);
+          return null;
+        }
+      ];
+
+    case '@reload':
+      return [state, async (state, dispatch) => {
+        dispatch(adt('@incomingRoute', {
+          route: state.activeRoute,
+          routeScrollY: window.scrollY
+        }));
+        return null;
+      }];
 
     case '@toast':
       return [state, async (state, dispatch) => {
@@ -596,20 +611,46 @@ const update: Update<State, Msg> = ({ state, msg }) => {
       return [state.update('toasts', ts => ts.filter(({ timestamp }) => timestamp + TOAST_AUTO_DISMISS_DURATION > now))];
     }
 
-    case 'closeModal':
+    case 'showModal': {
       return [
-        state,
-        async (state, dispatch) => {
-          // Trigger the modal's onCloseMsg to ensure state is "clean"
-          // in case the user closes the modal using the "Esc" key,
-          // "X" icon or by clicking the page backdrop.
-          const [newState, asyncState] = update({ state, msg: state.modal.content.onCloseMsg });
-          state = asyncState
-            ? await asyncState(newState, dispatch) || newState
-            : newState;
-          return state.setIn(['modal', 'open'], false);
-        }
+        state.set('showModal', msg.value)
       ];
+    }
+
+    case 'hideModal':
+      return [state.set('showModal', null)];
+
+    case 'acceptNewTerms':
+      return updateComponentChild({
+        state,
+        childStatePath: ['acceptNewTerms'],
+        childUpdate: AcceptNewTerms.update,
+        childMsg: msg.value,
+        mapChildMsg: adtCurried<ADT<'acceptNewTerms', AcceptNewTerms.Msg>>('acceptNewTerms')
+      });
+
+    case 'submitAcceptNewTerms':
+      if (!state.shared.session?.user.id) { return [state]; }
+      return AcceptNewTerms.submitAcceptNewTerms({
+        state,
+        userId: state.shared.session.user.id,
+        startLoading: startAcceptNewTermsLoading,
+        stopLoading: stopAcceptNewTermsLoading,
+        onSuccess: async state => {
+          return state
+            .merge({
+              showModal: null,
+              acceptNewTermsLoading: 0,
+              acceptNewTerms: immutable(await AcceptNewTerms.init({
+                errors: [],
+                child: {
+                  value: !!state.shared.session?.user.acceptedTermsAt,
+                  id: 'global-accept-new-terms'
+                }
+              }))
+            });
+        }
+      });
 
     case 'nav':
       return updateComponentChild({
@@ -627,7 +668,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'orgEdit'],
         childUpdate: PageOrgEdit.component.update,
         childGetMetadata: PageOrgEdit.component.getMetadata,
-        childGetModal: PageOrgEdit.component.getModal,
         childMsg: msg.value
       });
 
@@ -638,7 +678,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'orgSWUTerms'],
         childUpdate: PageOrgSWUTerms.component.update,
         childGetMetadata: PageOrgSWUTerms.component.getMetadata,
-        childGetModal: PageOrgSWUTerms.component.getModal,
         childMsg: msg.value
       });
 
@@ -649,7 +688,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'proposalSWUCreate'],
         childUpdate: PageProposalSWUCreate.component.update,
         childGetMetadata: PageProposalSWUCreate.component.getMetadata,
-        childGetModal: PageProposalSWUCreate.component.getModal,
         childMsg: msg.value
       });
     case 'pageProposalSWUEdit':
@@ -659,7 +697,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'proposalSWUEdit'],
         childUpdate: PageProposalSWUEdit.component.update,
         childGetMetadata: PageProposalSWUEdit.component.getMetadata,
-        childGetModal: PageProposalSWUEdit.component.getModal,
         childMsg: msg.value
       });
     case 'pageProposalSWUView':
@@ -669,7 +706,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'proposalSWUView'],
         childUpdate: PageProposalSWUView.component.update,
         childGetMetadata: PageProposalSWUView.component.getMetadata,
-        childGetModal: PageProposalSWUView.component.getModal,
         childMsg: msg.value
       });
 
@@ -680,7 +716,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'opportunitySWUEdit'],
         childUpdate: PageOpportunitySWUEdit.component.update,
         childGetMetadata: PageOpportunitySWUEdit.component.getMetadata,
-        childGetModal: PageOpportunitySWUEdit.component.getModal,
         childMsg: msg.value
       });
     case 'pageOpportunitySWUCreate':
@@ -690,7 +725,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'opportunitySWUCreate'],
         childUpdate: PageOpportunitySWUCreate.component.update,
         childGetMetadata: PageOpportunitySWUCreate.component.getMetadata,
-        childGetModal: PageOpportunitySWUCreate.component.getModal,
         childMsg: msg.value
       });
     case 'pageOpportunitySWUView':
@@ -700,7 +734,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'opportunitySWUView'],
         childUpdate: PageOpportunitySWUView.component.update,
         childGetMetadata: PageOpportunitySWUView.component.getMetadata,
-        childGetModal: PageOpportunitySWUView.component.getModal,
         childMsg: msg.value
       });
 
@@ -711,7 +744,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'opportunityCWUCreate'],
         childUpdate: PageOpportunityCWUCreate.component.update,
         childGetMetadata: PageOpportunityCWUCreate.component.getMetadata,
-        childGetModal: PageOpportunityCWUCreate.component.getModal,
         childMsg: msg.value
       });
     case 'pageOpportunityCWUEdit':
@@ -721,7 +753,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'opportunityCWUEdit'],
         childUpdate: PageOpportunityCWUEdit.component.update,
         childGetMetadata: PageOpportunityCWUEdit.component.getMetadata,
-        childGetModal: PageOpportunityCWUEdit.component.getModal,
         childMsg: msg.value
       });
     case 'pageOpportunityCWUView':
@@ -731,7 +762,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'opportunityCWUView'],
         childUpdate: PageOpportunityCWUView.component.update,
         childGetMetadata: PageOpportunityCWUView.component.getMetadata,
-        childGetModal: PageOpportunityCWUView.component.getModal,
         childMsg: msg.value
       });
 
@@ -742,7 +772,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'proposalCWUCreate'],
         childUpdate: PageProposalCWUCreate.component.update,
         childGetMetadata: PageProposalCWUCreate.component.getMetadata,
-        childGetModal: PageProposalCWUCreate.component.getModal,
         childMsg: msg.value
       });
     case 'pageProposalCWUEdit':
@@ -752,7 +781,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'proposalCWUEdit'],
         childUpdate: PageProposalCWUEdit.component.update,
         childGetMetadata: PageProposalCWUEdit.component.getMetadata,
-        childGetModal: PageProposalCWUEdit.component.getModal,
         childMsg: msg.value
       });
     case 'pageProposalCWUView':
@@ -762,7 +790,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'proposalCWUView'],
         childUpdate: PageProposalCWUView.component.update,
         childGetMetadata: PageProposalCWUView.component.getMetadata,
-        childGetModal: PageProposalCWUView.component.getModal,
         childMsg: msg.value
       });
 
@@ -773,7 +800,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'proposalCWUExportOne'],
         childUpdate: PageProposalCWUExportOne.component.update,
         childGetMetadata: PageProposalCWUExportOne.component.getMetadata,
-        childGetModal: PageProposalCWUExportOne.component.getModal,
         childMsg: msg.value
       });
     case 'pageProposalCWUExportAll':
@@ -783,7 +809,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'proposalCWUExportAll'],
         childUpdate: PageProposalCWUExportAll.component.update,
         childGetMetadata: PageProposalCWUExportAll.component.getMetadata,
-        childGetModal: PageProposalCWUExportAll.component.getModal,
         childMsg: msg.value
       });
     case 'pageProposalSWUExportOne':
@@ -793,7 +818,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'proposalSWUExportOne'],
         childUpdate: PageProposalSWUExportOne.component.update,
         childGetMetadata: PageProposalSWUExportOne.component.getMetadata,
-        childGetModal: PageProposalSWUExportOne.component.getModal,
         childMsg: msg.value
       });
     case 'pageProposalSWUExportAll':
@@ -803,7 +827,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'proposalSWUExportAll'],
         childUpdate: PageProposalSWUExportAll.component.update,
         childGetMetadata: PageProposalSWUExportAll.component.getMetadata,
-        childGetModal: PageProposalSWUExportAll.component.getModal,
         childMsg: msg.value
       });
     case 'pageProposalList':
@@ -813,7 +836,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'proposalList'],
         childUpdate: PageProposalList.component.update,
         childGetMetadata: PageProposalList.component.getMetadata,
-        childGetModal: PageProposalList.component.getModal,
         childMsg: msg.value
       });
 
@@ -824,7 +846,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'orgCreate'],
         childUpdate: PageOrgCreate.component.update,
         childGetMetadata: PageOrgCreate.component.getMetadata,
-        childGetModal: PageOrgCreate.component.getModal,
         childMsg: msg.value
       });
 
@@ -835,7 +856,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'orgList'],
         childUpdate: PageOrgList.component.update,
         childGetMetadata: PageOrgList.component.getMetadata,
-        childGetModal: PageOrgList.component.getModal,
         childMsg: msg.value
       });
 
@@ -846,7 +866,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'userProfile'],
         childUpdate: PageUserProfile.component.update,
         childGetMetadata: PageUserProfile.component.getMetadata,
-        childGetModal: PageUserProfile.component.getModal,
         childMsg: msg.value
       });
 
@@ -857,7 +876,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'userList'],
         childUpdate: PageUserList.component.update,
         childGetMetadata: PageUserList.component.getMetadata,
-        childGetModal: PageUserList.component.getModal,
         childMsg: msg.value
       });
 
@@ -868,7 +886,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'signOut'],
         childUpdate: PageSignOut.component.update,
         childGetMetadata: PageSignOut.component.getMetadata,
-        childGetModal: PageSignOut.component.getModal,
         childMsg: msg.value
       });
 
@@ -879,7 +896,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'signUpStepOne'],
         childUpdate: PageSignUpStepOne.component.update,
         childGetMetadata: PageSignUpStepOne.component.getMetadata,
-        childGetModal: PageSignUpStepOne.component.getModal,
         childMsg: msg.value
       });
 
@@ -890,7 +906,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'signUpStepTwo'],
         childUpdate: PageSignUpStepTwo.component.update,
         childGetMetadata: PageSignUpStepTwo.component.getMetadata,
-        childGetModal: PageSignUpStepTwo.component.getModal,
         childMsg: msg.value
       });
 
@@ -901,7 +916,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'signIn'],
         childUpdate: PageSignOut.component.update,
         childGetMetadata: PageSignOut.component.getMetadata,
-        childGetModal: PageSignOut.component.getModal,
         childMsg: msg.value
       });
 
@@ -912,7 +926,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'landing'],
         childUpdate: PageLanding.component.update,
         childGetMetadata: PageLanding.component.getMetadata,
-        childGetModal: PageLanding.component.getModal,
         childMsg: msg.value
       });
 
@@ -923,7 +936,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'dashboard'],
         childUpdate: PageDashboard.component.update,
         childGetMetadata: PageDashboard.component.getMetadata,
-        childGetModal: PageDashboard.component.getModal,
         childMsg: msg.value
       });
 
@@ -934,7 +946,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'opportunities'],
         childUpdate: PageOpportunities.component.update,
         childGetMetadata: PageOpportunities.component.getMetadata,
-        childGetModal: PageOpportunities.component.getModal,
         childMsg: msg.value
       });
 
@@ -945,7 +956,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'opportunityCreate'],
         childUpdate: PageOpportunityCreate.component.update,
         childGetMetadata: PageOpportunityCreate.component.getMetadata,
-        childGetModal: PageOpportunityCreate.component.getModal,
         childMsg: msg.value
       });
 
@@ -956,7 +966,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'learnMoreCWU'],
         childUpdate: PageLearnMoreCWU.component.update,
         childGetMetadata: PageLearnMoreCWU.component.getMetadata,
-        childGetModal: PageLearnMoreCWU.component.getModal,
         childMsg: msg.value
       });
 
@@ -967,18 +976,46 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'learnMoreSWU'],
         childUpdate: PageLearnMoreSWU.component.update,
         childGetMetadata: PageLearnMoreSWU.component.getMetadata,
-        childGetModal: PageLearnMoreSWU.component.getModal,
         childMsg: msg.value
       });
 
-    case 'pageContent':
+    case 'pageContentView':
       return updateAppChildPage({
         ...defaultPageUpdateParams,
-        mapChildMsg: value => ({ tag: 'pageContent', value }),
-        childStatePath: ['pages', 'content'],
-        childUpdate: PageContent.component.update,
-        childGetMetadata: PageContent.component.getMetadata,
-        childGetModal: PageContent.component.getModal,
+        mapChildMsg: value => ({ tag: 'pageContentView', value }),
+        childStatePath: ['pages', 'contentView'],
+        childUpdate: PageContentView.component.update,
+        childGetMetadata: PageContentView.component.getMetadata,
+        childMsg: msg.value
+      });
+
+    case 'pageContentCreate':
+      return updateAppChildPage({
+        ...defaultPageUpdateParams,
+        mapChildMsg: value => ({ tag: 'pageContentCreate', value }),
+        childStatePath: ['pages', 'contentCreate'],
+        childUpdate: PageContentCreate.component.update,
+        childGetMetadata: PageContentCreate.component.getMetadata,
+        childMsg: msg.value
+      });
+
+    case 'pageContentEdit':
+      return updateAppChildPage({
+        ...defaultPageUpdateParams,
+        mapChildMsg: value => ({ tag: 'pageContentEdit', value }),
+        childStatePath: ['pages', 'contentEdit'],
+        childUpdate: PageContentEdit.component.update,
+        childGetMetadata: PageContentEdit.component.getMetadata,
+        childMsg: msg.value
+      });
+
+    case 'pageContentList':
+      return updateAppChildPage({
+        ...defaultPageUpdateParams,
+        mapChildMsg: value => ({ tag: 'pageContentList', value }),
+        childStatePath: ['pages', 'contentList'],
+        childUpdate: PageContentList.component.update,
+        childGetMetadata: PageContentList.component.getMetadata,
         childMsg: msg.value
       });
 
@@ -989,7 +1026,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'notice'],
         childUpdate: PageNotice.component.update,
         childGetMetadata: PageNotice.component.getMetadata,
-        childGetModal: PageNotice.component.getModal,
         childMsg: msg.value
       });
 
@@ -1000,7 +1036,6 @@ const update: Update<State, Msg> = ({ state, msg }) => {
         childStatePath: ['pages', 'notFound'],
         childUpdate: PageNotFound.component.update,
         childGetMetadata: PageNotFound.component.getMetadata,
-        childGetModal: PageNotFound.component.getModal,
         childMsg: msg.value
       });
 

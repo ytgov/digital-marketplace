@@ -1,7 +1,6 @@
 import { prefixPath } from 'front-end/lib';
 import { Route } from 'front-end/lib/app/types';
 import * as Router from 'front-end/lib/framework/router';
-import * as PageContent from 'front-end/lib/pages/content';
 import * as PageNotice from 'front-end/lib/pages/notice';
 import * as CWUOpportunityEditTab from 'front-end/lib/pages/opportunity/code-with-us/edit/tab';
 import * as SWUOpportunityEditTab from 'front-end/lib/pages/opportunity/sprint-with-us/edit/tab';
@@ -15,17 +14,11 @@ import { getString } from 'shared/lib';
 import { adt } from 'shared/lib/types';
 
 export function pushState(route: Route) {
-  if (window.history && window.history.pushState) {
-    const path = router.routeToUrl(route);
-    window.history.pushState({ path }, '', path);
-  }
+  Router.pushState(router.routeToUrl(route), 0);
 }
 
 export function replaceState(route: Route) {
-  if (window.history && window.history.replaceState) {
-    const path = router.routeToUrl(route);
-    window.history.replaceState({ path }, '', path);
-  }
+  Router.replaceState(router.routeToUrl(route), 0);
 }
 
 export function redirect(path: string) {
@@ -253,10 +246,12 @@ const router: Router.Router<Route> = {
     },
     {
       path: prefixPath('/organizations'),
-      makeRoute() {
+      makeRoute({ query }) {
         return {
           tag: 'orgList',
-          value: null
+          value: {
+            page: parseInt(getString(query, 'page'), 10) || undefined
+          }
         };
       }
     },
@@ -364,12 +359,27 @@ const router: Router.Router<Route> = {
       }
     },
     {
+      path: prefixPath('/content'),
+      makeRoute() {
+        return adt('contentList', null);
+      }
+    },
+    {
+      path: prefixPath('/content/create'),
+      makeRoute() {
+        return adt('contentCreate', null);
+      }
+    },
+    {
+      path: prefixPath('/content/:contentId/edit'),
+      makeRoute({ params }) {
+        return adt('contentEdit', getString(params, 'contentId'));
+      }
+    },
+    {
       path: prefixPath('/content/:contentId'),
       makeRoute({ params }) {
-        return {
-          tag: 'content',
-          value: PageContent.parseContentId(params.contentId)
-        };
+        return adt('contentView', getString(params, 'contentId'));
       }
     },
     {
@@ -438,7 +448,13 @@ const router: Router.Router<Route> = {
         return prefixPath('/learn-more/code-with-us');
       case 'learnMoreSWU':
         return prefixPath('/learn-more/sprint-with-us');
-      case 'content':
+      case 'contentList':
+        return prefixPath('/content');
+      case 'contentCreate':
+        return prefixPath('/content/create');
+      case 'contentEdit':
+        return prefixPath(`/content/${route.value}/edit`);
+      case 'contentView':
         return prefixPath(`/content/${route.value}`);
       case 'signIn':
         return prefixPath(`/sign-in${route.value.redirectOnSuccess ? `?redirectOnSuccess=${window.encodeURIComponent(route.value.redirectOnSuccess)}` : ''}`);
@@ -464,7 +480,7 @@ const router: Router.Router<Route> = {
       case 'userList':
         return prefixPath('/users');
       case 'orgList':
-        return prefixPath('/organizations');
+        return prefixPath(`/organizations${route.value.page ? `?page=${window.encodeURIComponent(route.value.page)}` : ''}`);
       case 'orgEdit':
         return prefixPath(`/organizations/${route.value.orgId}/edit${route.value.tab ? `?tab=${route.value.tab}` : ''}`);
       case 'orgSWUTerms':

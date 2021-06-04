@@ -74,14 +74,14 @@ const init: PageInit<RouteParams, SharedState, State, Msg> = async ({ dispatch, 
   const viewerUser = shared.session?.user;
   const oppR = await api.opportunities.swu.readOne(opportunityId);
   if (!api.isValid(oppR)) { return fail(); }
-  const scopeContentResult = await api.getMarkdownFile(SWU_OPPORTUNITY_SCOPE_CONTENT_ID);
+  const scopeContentResult = await api.content.readOne(SWU_OPPORTUNITY_SCOPE_CONTENT_ID);
   if (!api.isValid(scopeContentResult)) { return fail(); }
   await api.counters.update(getSWUOpportunityViewsCounterName(opportunityId), null);
   let existingProposal: SWUProposalSlim | undefined;
   let isQualified = false;
   if (viewerUser && isVendor(viewerUser)) {
     existingProposal = await api.proposals.swu.getExistingProposalForOpportunity(opportunityId);
-    const orgs = api.getValidValue(await api.organizations.readMany(), []);
+    const orgs = api.getValidValue(await api.ownedOrganizations.readMany(), []);
     isQualified = orgs.reduce((acc, o) => acc || doesOrganizationMeetSWUQualification(o), false as boolean);
   }
   return valid(immutable({
@@ -92,7 +92,7 @@ const init: PageInit<RouteParams, SharedState, State, Msg> = async ({ dispatch, 
     existingProposal,
     activeInfoTab: 'details',
     routePath,
-    scopeContent: scopeContentResult.value
+    scopeContent: scopeContentResult.value.body
   }));
 };
 
@@ -544,7 +544,7 @@ export const component: PageComponent<RouteParams, SharedState, State, Msg> = {
   getAlerts: getAlertsValid(state => {
     const viewerUser = state.viewerUser;
     const existingProposal = state.existingProposal;
-    const successfulProponentName = state.opportunity.successfulProponentName;
+    const successfulProponentName = state.opportunity.successfulProponent?.name;
     const vendor = !!viewerUser && isVendor(viewerUser);
     const isAcceptingProposals = isSWUOpportunityAcceptingProposals(state.opportunity);
     return {

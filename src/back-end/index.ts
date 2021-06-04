@@ -9,12 +9,15 @@ import { console as consoleAdapter } from 'back-end/lib/logger/adapters';
 import basicAuth from 'back-end/lib/map-routes/basic-auth';
 import affiliationResource from 'back-end/lib/resources/affiliation';
 import avatarResource from 'back-end/lib/resources/avatar';
+import contentResource from 'back-end/lib/resources/content';
 import counterResource from 'back-end/lib/resources/counter';
+import emailNotificationsResource from 'back-end/lib/resources/email-notifications';
 import fileResource from 'back-end/lib/resources/file';
 import metricsResource from 'back-end/lib/resources/metrics';
 import codeWithUsOpportunityResource from 'back-end/lib/resources/opportunity/code-with-us';
 import sprintWithUsOpportunityResource from 'back-end/lib/resources/opportunity/sprint-with-us';
 import organizationResource from 'back-end/lib/resources/organization';
+import ownedOrganizationResource from 'back-end/lib/resources/owned-organization';
 import codeWithUsProposalResource from 'back-end/lib/resources/proposal/code-with-us';
 import sprintWithUsProposalResource from 'back-end/lib/resources/proposal/sprint-with-us';
 import sessionResource from 'back-end/lib/resources/session';
@@ -70,6 +73,7 @@ export async function createRouter(connection: Connection): Promise<AppRouter> {
     affiliationResource,
     avatarResource,
     codeWithUsOpportunityResource,
+    contentResource,
     sprintWithUsOpportunityResource,
     codeWithUsProposalResource,
     sprintWithUsProposalResource,
@@ -78,9 +82,11 @@ export async function createRouter(connection: Connection): Promise<AppRouter> {
     fileResource,
     counterResource,
     organizationResource,
+    ownedOrganizationResource,
     sessionResource,
     userResource,
-    metricsResource
+    metricsResource,
+    emailNotificationsResource
   ];
 
   // Define CRUD routes.
@@ -146,7 +152,10 @@ async function start() {
   let router: AppRouter = await (SCHEDULED_DOWNTIME ? createDowntimeRouter : createRouter)(connection);
   // Add the status router.
   // This should not be behind basic auth.
-  router = [...statusRouter as AppRouter, ...router];
+  // Also, run the CWU and SWU hooks with the status router.
+  // i.e. The status route effectively acts as an action triggered by a CRON job.
+  const statusRouterWithHooks = addHooks([codeWithUsHook(connection), sprintWithUsHook(connection)])(statusRouter as AppRouter);
+  router = [...statusRouterWithHooks, ...router];
   // Bind the server to a port and listen for incoming connections.
   // Need to lock-in Session type here.
   const adapter: ExpressAdapter<any, any, any, any, Session, FileUploadMetadata | null> = express();

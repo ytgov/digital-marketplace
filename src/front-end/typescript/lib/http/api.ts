@@ -1,11 +1,13 @@
 import { prefixPath } from 'front-end/lib';
 import * as RichMarkdownEditor from 'front-end/lib/components/form-field/rich-markdown-editor';
-import { CrudApi, CrudClientAction, CrudClientActionWithBody, makeCreate, makeCrudApi, makeRequest, makeSimpleCrudApi, OmitCrudApi, PickCrudApi, ReadManyActionTypes, SimpleResourceTypes, undefinedActions, UndefinedResourceTypes } from 'front-end/lib/http/crud';
+import { CrudApi, CrudClientAction, CrudClientActionWithBody, CrudResponse, makeCreate, makeCrudApi, makeRequest, makeSimpleCrudApi, OmitCrudApi, PickCrudApi, ReadManyActionTypes, SimpleResourceTypes, undefinedActions, UndefinedResourceTypes } from 'front-end/lib/http/crud';
 import { compareDates, compareNumbers, prefix } from 'shared/lib';
 import { invalid, isValid, ResponseValidation, valid } from 'shared/lib/http';
 import * as AddendumResource from 'shared/lib/resources/addendum';
 import * as AffiliationResource from 'shared/lib/resources/affiliation';
+import * as ContentResource from 'shared/lib/resources/content';
 import * as CounterResource from 'shared/lib/resources/counter';
+import * as EmailNotificationsResource from 'shared/lib/resources/email-notifications';
 import * as FileResource from 'shared/lib/resources/file';
 import * as MetricsResource from 'shared/lib/resources/metrics';
 import * as CWUOpportunityResource from 'shared/lib/resources/opportunity/code-with-us';
@@ -22,21 +24,6 @@ import { adt, ClientHttpMethod, Id } from 'shared/lib/types';
 export { getValidValue, getInvalidValue, mapValid, mapInvalid, ResponseValidation, isValid, isInvalid, isUnhandled } from 'shared/lib/http';
 
 export const apiNamespace = (p: string) => `/${prefix(prefixPath('api'))(p)}`;
-
-// Markdown files.
-
-interface GetMarkdownFileActionTypes {
-  request: undefined;
-  rawResponse: never;
-  validResponse: string;
-  invalidResponse: null;
-}
-
-export const getMarkdownFile = (id: string) => makeRequest<GetMarkdownFileActionTypes>({
-  method: ClientHttpMethod.Get,
-  url: prefixPath(`/markdown/${id}.md`),
-  body: undefined
-});
 
 // Metrics
 
@@ -100,6 +87,50 @@ export const counters: CountersCrudApi = {
     });
   }
 
+};
+
+// Content
+
+interface ContentSimpleResourceTypesParams {
+  record: ContentResource.Content;
+  create: {
+    request: ContentResource.CreateRequestBody;
+    invalidResponse: ContentResource.CreateValidationErrors;
+  };
+  update: {
+    request: ContentResource.UpdateRequestBody;
+    invalidResponse: ContentResource.UpdateValidationErrors;
+  };
+}
+
+type ContentResourceTypes = SimpleResourceTypes<ContentSimpleResourceTypesParams>;
+
+export const content: CrudApi<ContentResourceTypes> = makeSimpleCrudApi<ContentSimpleResourceTypesParams>(apiNamespace('content'));
+
+// EmailNotifications
+
+interface EmailNotificationsSimpleResourceTypesParams {
+  record: null;
+  create: {
+    request: EmailNotificationsResource.CreateRequestBody;
+    invalidResponse: EmailNotificationsResource.CreateValidationErrors;
+  };
+  update: {
+    request: null;
+    invalidResponse: null;
+  };
+}
+
+type EmailNotificationsSimpleResourceTypes = SimpleResourceTypes<EmailNotificationsSimpleResourceTypesParams>;
+
+type EmailNotificationsResourceTypes = PickCrudApi<EmailNotificationsSimpleResourceTypes, 'create'>;
+
+export const emailNotifications: CrudApi<EmailNotificationsResourceTypes> = {
+  ...makeSimpleCrudApi<EmailNotificationsSimpleResourceTypesParams>(apiNamespace('emailNotifications')),
+  readMany: undefined,
+  readOne: undefined,
+  update: undefined,
+  delete: undefined
 };
 
 // Sessions
@@ -730,6 +761,10 @@ function rawOrganizationSlimToOrganizationSlim(raw: RawOrganizationSlim): OrgRes
   };
 }
 
+interface RawOrganizationReadManyResponse extends Omit<OrgResource.ReadManyResponseBody, 'items'> {
+  items: RawOrganizationSlim[];
+}
+
 interface OrganizationResourceTypes {
   create: {
     request: OrgResource.CreateRequestBody;
@@ -743,9 +778,9 @@ interface OrganizationResourceTypes {
     invalidResponse: OrgResource.DeleteValidationErrors;
   };
   readMany: {
-    rawResponse: OrgResource.OrganizationSlim;
-    validResponse: OrgResource.OrganizationSlim;
-    invalidResponse: string[];
+    rawResponse: RawOrganizationReadManyResponse;
+    validResponse: OrgResource.ReadManyResponseBody;
+    invalidResponse: OrgResource.ReadManyResponseValidationErrors;
   };
   update: {
     request: OrgResource.UpdateRequestBody;
@@ -766,12 +801,48 @@ const organizationActionParams = {
   transformValid: rawOrganizationToOrganization
 };
 
-export const organizations: CrudApi<OrganizationResourceTypes> = makeCrudApi<OrganizationResourceTypes>({
-  routeNamespace: ORGANIZATIONS_ROUTE_NAMESPACE,
-  create: organizationActionParams,
-  readOne: organizationActionParams,
-  update: organizationActionParams,
-  delete: organizationActionParams,
+interface OrganizationsApi extends Omit<CrudApi<OrganizationResourceTypes>, 'readMany'> {
+  readMany(page: number, pageSize: number): Promise<CrudResponse<OrganizationResourceTypes['readMany']>>;
+}
+
+export const organizations: OrganizationsApi = {
+  ...makeCrudApi<Omit<OrganizationResourceTypes, 'readMany'> & Pick<UndefinedResourceTypes, 'readMany'>>({
+    routeNamespace: ORGANIZATIONS_ROUTE_NAMESPACE,
+    create: organizationActionParams,
+    readOne: organizationActionParams,
+    update: organizationActionParams,
+    delete: organizationActionParams,
+    readMany: undefined
+  }),
+  readMany(page, pageSize) {
+    return makeRequest<OrganizationResourceTypes['readMany'] & { request: null; }>({
+      method: ClientHttpMethod.Get,
+      url: `${ORGANIZATIONS_ROUTE_NAMESPACE}?page=${window.encodeURIComponent(page)}&pageSize=${window.encodeURIComponent(pageSize)}`,
+      body: null,
+      transformValid(raw) {
+        return {
+          ...raw,
+          items: raw.items.map(i => rawOrganizationSlimToOrganizationSlim(i))
+        };
+      }
+    });
+  }
+};
+
+// Owned Organizations
+interface OwnedOrganizationResourceTypes extends Omit<UndefinedResourceTypes, 'readMany'> {
+  readMany: {
+    rawResponse: RawOrganizationSlim;
+    validResponse: OrgResource.OrganizationSlim;
+    invalidResponse: string[];
+  };
+}
+
+const OWNED_ORGANIZATIONS_ROUTE_NAMESPACE = apiNamespace('ownedOrganizations');
+
+export const ownedOrganizations: CrudApi<OwnedOrganizationResourceTypes> = makeCrudApi({
+  ...undefinedActions,
+  routeNamespace: OWNED_ORGANIZATIONS_ROUTE_NAMESPACE,
   readMany: {
     transformValid: rawOrganizationSlimToOrganizationSlim
   }

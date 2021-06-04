@@ -1,7 +1,7 @@
 import { makePageMetadata, prefixPath } from 'front-end/lib';
 import { isUserType } from 'front-end/lib/access-control';
 import { Route, SharedState } from 'front-end/lib/app/types';
-import { ComponentView, GlobalComponentMsg, newRoute, PageComponent, PageInit, Update } from 'front-end/lib/framework';
+import { ComponentView, GlobalComponentMsg, newRoute, PageComponent, PageInit, replaceRoute, Update } from 'front-end/lib/framework';
 import { TextColor } from 'front-end/lib/types';
 import { routeDest } from 'front-end/lib/views/link';
 import ProgramCard from 'front-end/lib/views/program-card';
@@ -34,7 +34,7 @@ const init: PageInit<RouteParams, SharedState, State, Msg> = isUserType({
         redirectOnSuccess: routePath
       })));
     } else {
-      dispatch(newRoute(adt('notFound' as const, {
+      dispatch(replaceRoute(adt('notFound' as const, {
         path: routePath
       })));
     }
@@ -59,7 +59,7 @@ const view: ComponentView<State, Msg> = () => {
           links={[
             {
               button: true,
-              dest: routeDest(adt('content', 'code-with-us-opportunity-guide')),
+              dest: routeDest(adt('contentView', 'code-with-us-opportunity-guide')),
               children: ['Read Guide'],
               color: 'info' as TextColor,
               outline: true
@@ -80,7 +80,7 @@ const view: ComponentView<State, Msg> = () => {
           links={[
             {
               button: true,
-              dest: routeDest(adt('content', 'sprint-with-us-opportunity-guide')),
+              dest: routeDest(adt('contentView', 'sprint-with-us-opportunity-guide')),
               children: ['Read Guide'],
               color: 'info' as TextColor,
               outline: true
