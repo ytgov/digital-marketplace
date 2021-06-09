@@ -1,6 +1,8 @@
 import { generateUuid } from 'back-end/lib';
 import { Connection, tryDb } from 'back-end/lib/db';
 import { readOneFileById } from 'back-end/lib/db/file';
+import { makeDomainLogger } from 'back-end/lib/logger';
+import { console as consoleAdapter } from 'back-end/lib/logger/adapters';
 import { valid } from 'shared/lib/http';
 import { User, UserSlim, UserStatus, UserType } from 'shared/lib/resources/user';
 import { Id } from 'shared/lib/types';
@@ -92,26 +94,40 @@ export const readManyUsersNotificationsOn = tryDb<[], User[]>(async (connection)
   return valid(await Promise.all(results.map(async raw => await rawUserToUser(connection, raw))));
 });
 
-export const readManyUsersByRole = tryDb<[UserType], User[]>(async (connection, type) => {
-  const results = await connection<RawUser>('users')
+export const readManyUsersByRole = tryDb<[UserType, boolean?], User[]>(async (connection, type, includeInactive = true) => {
+  const query = connection<RawUser>('users')
     .where({ type })
     .select('*');
+
+  if (!includeInactive) {
+    query.where({ status: UserStatus.Active });
+  }
+
+  const results = await query;
   return valid(await Promise.all(results.map(async raw => await rawUserToUser(connection, raw))));
 });
 
+const tempLogger = makeDomainLogger(consoleAdapter, 'create-user-debug', 'development');
 export const createUser = tryDb<[CreateUserParams], User>(async (connection, user) => {
   const now = new Date();
-  const [result] = await connection<RawUser>('users')
-    .insert({
-      ...user,
-      id: generateUuid(),
-      createdAt: now,
-      updatedAt: now
-    } as CreateUserParams, '*');
-  if (!result) {
-    throw new Error('unable to create user');
+  try {
+    const [result] = await connection<RawUser>('users')
+      .insert({
+        ...user,
+        id: generateUuid(),
+        createdAt: now,
+        updatedAt: now
+      } as CreateUserParams, '*');
+    if (!result) {
+      throw new Error('unable to create user');
+    }
+    return valid(await rawUserToUser(connection, result));
+  } catch (e) {
+    const err = new Error('user creation failed');
+    tempLogger.error(`user creation failed with; email: ${user.email}; type: ${user.type}`);
+    tempLogger.error(err.stack || 'error stack');
+    throw e;
   }
-  return valid(await rawUserToUser(connection, result));
 });
 
 export const updateUser = tryDb<[UpdateUserParams], User>(async (connection, user) => {
@@ -128,15 +144,43 @@ export const updateUser = tryDb<[UpdateUserParams], User>(async (connection, use
   return valid(await rawUserToUser(connection, result));
 });
 
-export async function userHasAcceptedTerms(connection: Connection, id: Id): Promise<boolean> {
-  const [result] = await connection<{ acceptedTerms: Date }>('users')
+export async function unacceptTermsForAllVendors(connection: Connection): Promise<number> {
+  const results = await connection<RawUser>('users')
+    .where({ type: UserType.Vendor })
+    .update({
+      acceptedTermsAt: null
+    }, '*');
+
+  if (!results) {
+    throw new Error ('unable to update users');
+  }
+
+  return results.length;
+}
+
+export async function userHasAcceptedCurrentTerms(connection: Connection, id: Id): Promise<boolean> {
+  const [result] = await connection<{ acceptedTermsAt: Date }>('users')
     .where({ id })
-    .select('acceptedTerms');
+    .select('acceptedTermsAt');
 
   if (!result) {
-    throw new Error('unable to check terms status for user');
+    throw new Error('unable to check current terms status for user');
   }
-  if (result.acceptedTerms) {
+  if (result.acceptedTermsAt) {
+    return true;
+  }
+  return false;
+}
+
+export async function userHasAcceptedPreviousTerms(connection: Connection, id: Id): Promise<boolean> {
+  const [result] = await connection<{ lastAcceptedTermsAt: Date }>('users')
+    .where({ id })
+    .select('lastAcceptedTermsAt');
+
+  if (!result) {
+    throw new Error('unable to check previous terms status for user');
+  }
+  if (result.lastAcceptedTermsAt) {
     return true;
   }
   return false;

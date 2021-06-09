@@ -203,7 +203,7 @@ Environment variables that affect the back-end server's functionality are stored
 | `NODE_ENV` | The back-end run-time's environment. Possible values include either "development" or "production". |
 | `SERVER_HOST` | The IPv4 address for the back-end to bind to. |
 | `SERVER_PORT` | The TCP port for the back-end to bind to. |
-| `SCHEDULED_DOWNTIME` | A boolean flag (`0` for `false`, `1` for `true`) to turn off CRUD endpoints and vend a downtime HTML page to all users when set to a non-zero number. |
+| `SCHEDULED_DOWNTIME` | A boolean flag (set to `0` for `false`, `1` for `true`) to turn off CRUD endpoints and vend a downtime HTML page to all users when set to a non-zero number. Defaults to `false` if `SCHEDULED_DOWNTIME` is undefined or invalid. |
 | `BASIC_AUTH_USERNAME` | An HTTP basic auth username to limit access to the web application. |
 | `BASIC_AUTH_PASSWORD_HASH` | A password hash to authenticate HTTP basic auth passwords to limit access to the web application. |
 | `ORIGIN` | The root URL of the web app. This is used for authentication and generating URLs in email notifications. The value must include the protocol and any path prefixes. e.g. `https://digital.gov.bc.ca/marketplace`. |
@@ -237,6 +237,7 @@ Environment variables that affect the back-end server's functionality are stored
 | `SWAGGER_ENABLE` | A flag to enable the Swagger UI API documentation under `SWAGGER_UI_PATH`. Defaults to `false`.
 | `SWAGGER_UI_PATH` | The base path to run the Swagger UI under for serving of API documentation. Defaults to `/docs/api`. |
 | `TZ` | Time-zone to use for the back-end. Required by the Linux OS that runs the back-end, but not used as application configuration. |
+| `SHOW_TEST_INDICATOR` | A boolean flag (set to `0` for `false`, `1` for `true`) to indicate that an environment is intended for testing purposes (prefixes emails subjects and shows a testing variant of the logo in email notifications). Defaults to `false`. |
 
 #### Front-End Environment Variables
 
@@ -247,10 +248,11 @@ Environment variables that affect the front-end's build process are stored and s
 | `NODE_ENV` | Determines whether the front-end is built for production (e.g. minification, compression, etc). Possible values include either "development" or "production". |
 | `CONTACT_EMAIL` | The Digital Marketplace team's contact email address. |
 | `PATH_PREFIX` | The URL path prefix that the Digital Marketplace is deployed to. For example, if deployed to `digital.gov.bc.ca/marketplace`, the value of this variable should be `marketplace`. |
+| `SHOW_TEST_INDICATOR` | A boolean flag (set to `0` for `false`, `1` for `true`) to indicate that an environment is intended for testing purposes (shows a testing variant of the logo in the web app UI). Defaults to `false`. |
 
 ## Deployment
 
-This project is deployed to the Government of British Columbia's own OpenShift infrastructure.
+This project is deployed to the Government of British Columbia's own OpenShift infrastructure.  *NOTE* The instructions below apply to deployment to the OpenShift 4 (OCP4) environment, and no longer apply to deployment to OCP3 environments.
 
 ### Environments
 
@@ -258,9 +260,9 @@ We have four environments:
 
 | OpenShift Project | Name | URL |
 |---|---|---|
-| xzyxml-dev | Development | https://dig-mkt-app-dev.pathfinder.gov.bc.ca |
-| xzyxml-test | Test | https://dig-mkt-app-test.pathfinder.gov.bc.ca |
-| xzyxml-prod | Production | https://dig-mkt-app-prod.pathfinder.gov.bc.ca |
+| ccc866-dev | Development | https://app-digmkt-dev.apps.silver.devops.gov.bc.ca |
+| ccc866-test | Test | https://app-digmkt-test.apps.silver.devops.gov.bc.ca |
+| ccc866-prod | Production | https://app-digmkt-prod.apps.silver.devops.gov.bc.ca |
 
 Each environment has its own database instance.
 
@@ -268,11 +270,15 @@ The Development and Test environments are secured behind HTTP Basic Auth. Please
 
 ### Deployment Process
 
-The "xzyxml-tools" OpenShift project is used to trigger the deployment process for all environments.
+The "ccc866-tools" OpenShift project is used to trigger the deployment process for all environments.
 
-To deploy to the Development environment, start a build for "dig-mkt-app-dev", and OpenShift will build and deploy HEAD from the `development` branch.
+To deploy to the Development environment, start a build for "app-digmkt-dev", and OpenShift will build and deploy HEAD from the `development` branch into the Dev environment listed above.
 
-To deploy to the Production environment, start a build for "dig-mkt-app-prod", and OpenShift will build HEAD from the `master` branch. You will need to manually deploy the build once it completes by deploying the "dig-mkt-app-prod" deployment in the "xzyxml-prod" project.
+To deploy to the Test environment, start a build for "app-digmkt-test", and OpenShift will build and deploy HEAD from the `master` branch into the Test environment listed above.
+
+To deploy to the Production environment, start a build for "app-digmkt-prod", and OpenShift will build HEAD from the `master` branch. You will need to manually deploy the build to the Production environment listed above once it completes by deploying the "app-digmkt-prod" deployment in the "ccc866-prod" project.
+
+For instructions on building images for each of the environments and setting up build and deployment configurations in OpenShift 4, please refer to the instructions in [openshift/README.md](./openshift/README.md).  
 
 #### Running Database Migrations
 
@@ -291,21 +297,17 @@ A manual backup can be immediately performed by connecting to the backup contain
 
 Backup archives are stored in the same OpenShift project as the Digital Marketplace application, on a separate provisioned volume.
 
+You can find instructions for building and deploying the Backup Container images to OpenShift 4 [here](./openshift/BACKUPS.md).
+
 #### Restoring from Backup
 
 In the unfortunate event that you need to restore your data from a backup archive, the `backup.sh` script can  be used to restore from the last backup file. Refer to https://github.com/BCDevOps/backup-container#restore for details on how to use this script.
 
 ### High Availability Database Deployment
 
-The Digital Marketplace is currently deployed to an OpenShift platform using a highly available PostgreSQL replicaset. The template used to deploy this replicaset is based on Patroni (https://patroni.readthedocs.io/en/latest/). A deployment configuration has been provided in `openshift/templates/patroni-deploy-config.json` for deployment in other OpenShift environments.
+The Digital Marketplace is currently deployed to an OpenShift platform using a highly available PostgreSQL stateful set. The template used to deploy this set is based on Patroni (https://patroni.readthedocs.io/en/latest/). A deployment configuration has been provided in `openshift/templates/database` for deployment to OpenShift environments.  Instructions for building and deploying can be viewed [here](./openshift/BACKUPS.md).
 
-Use the following command to run this deployment script using the OpenShift command line tools (first ensure that you have the correct OpenShift project selected using `oc project`):
-
-```
-oc process -f openshift/templates/patroni-deploy-config.json | oc create -f -
-```
-
-Deployment as a highly available replicaset is recommended, but not required. A standalone PostgreSQL database deployment configuration has also been provided in `openshift/templates/postgres-deploy-config.json` and can be run using the same OpenShift CLI command above.
+Deployment as a highly available replicaset is recommended, but not required. A standalone PostgreSQL database deployment configuration has also been provided in `openshift/templates/database`.
 
 ## Community
 

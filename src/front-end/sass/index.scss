@@ -22,17 +22,17 @@ $spacer: 1rem;
 // 'h' stands for 'half'
 $spacers: (
   n4h: ($spacer * -2),
-	n6:  ($spacer * -4),
-	n7:  ($spacer * -5),
-	n8:  ($spacer * -6),
-	n9:  ($spacer * -8),
-	n10: ($spacer * -10),
+  n6:  ($spacer * -4),
+  n7:  ($spacer * -5),
+  n8:  ($spacer * -6),
+  n9:  ($spacer * -8),
+  n10: ($spacer * -10),
   4h:  ($spacer * 2),
-	6:   ($spacer * 4),
-	7:   ($spacer * 5),
-	8:   ($spacer * 6),
-	9:   ($spacer * 8),
-	10:  ($spacer * 10)
+  6:   ($spacer * 4),
+  7:   ($spacer * 5),
+  8:   ($spacer * 6),
+  9:   ($spacer * 8),
+  10:  ($spacer * 10)
 );
 
 $grid-gutter-width: $spacer * 2;
@@ -60,6 +60,7 @@ $blue-light-alt-2: #F2FAFB;
 $purple:           #512A44;
 $purple-light:     #8E7585;
 $yellow:           #F2A900;
+$yellow-light:     #FFDC8A;
 $red:              #DC3545;
 $green:            #28A745;
 $orange:           #FD7E14;
@@ -106,6 +107,9 @@ $c-landing-role-icon: $yellow;
 $c-landing-testimonial-source: $yellow;
 $c-landing-small-underline: $yellow;
 $c-landing-programs-bg: $blue-light-alt-2;
+$c-landing-stats-bg: $blue-dark;
+$c-landing-stats-stat: $yellow-light;
+$c-landing-stats-description: $white;
 $c-learn-more-bg: $blue-light-alt-2;
 $c-dashboard-bg: $blue-light-alt-2;
 $c-opportunity-list-learn-more-bg: $blue-light-alt-2;
@@ -129,6 +133,8 @@ $c-skills-bg: $purple;
 $c-multi-select-item-bg: $purple;
 $c-multi-select-item-remove: $purple-light;
 $c-form-field-required: $yellow;
+$c-table-icon-check: $gray-700;
+$c-table-icon-times: $gray-500;
 // Static HTML Pages
 $c-static-html-bg: $white;
 $c-static-html-fg: $black;
@@ -161,6 +167,9 @@ $app-utility-colors: (
   'c-landing-testimonial-source': $c-landing-testimonial-source,
   'c-landing-small-underline': $c-landing-small-underline,
   'c-landing-programs-bg': $c-landing-programs-bg,
+  'c-landing-stats-bg': $c-landing-stats-bg,
+  'c-landing-stats-stat': $c-landing-stats-stat,
+  'c-landing-stats-description': $c-landing-stats-description,
   'c-learn-more-bg': $c-learn-more-bg,
   'c-dashboard-bg': $c-dashboard-bg,
   'c-opportunity-list-learn-more-bg': $c-opportunity-list-learn-more-bg,
@@ -184,6 +193,8 @@ $app-utility-colors: (
   'c-multi-select-item-bg': $c-multi-select-item-bg,
   'c-multi-select-item-remove': $c-multi-select-item-remove,
   'c-form-field-required': $c-form-field-required,
+  'c-table-icon-check': $c-table-icon-check,
+  'c-table-icon-times': $c-table-icon-times,
   // Static HTML Pages
   'c-static-html-bg': $c-static-html-bg,
   'c-static-html-fg': $c-static-html-fg
@@ -648,6 +659,14 @@ nav.navbar .nav-link:hover {
   text-decoration: underline !important;
 }
 
+.overline {
+  font-weight: $font-weight-bold;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  line-height: 14px;
+  text-transform: uppercase;
+}
+
 // Create classes for each of the text colors
 // that apply the color when the element is being hovered.
 // .text-hover-primary, .text-hover-danger, etc.
@@ -782,7 +801,7 @@ nav.navbar .nav-link:hover {
     $color: map-get($data, color);
     $icon: map-get($data, icon);
 
-		&.is-#{$state} {
+    &.is-#{$state} {
 
       .react-select__control {
         border-color: $color;
@@ -846,6 +865,7 @@ nav.navbar .nav-link:hover {
 
     &__placeholder {
       color: $input-placeholder-color;
+      white-space: nowrap;
     }
 
     &__option {

@@ -1,3 +1,4 @@
+import { EMPTY_STRING } from 'front-end/config';
 import { makePageMetadata } from 'front-end/lib';
 import { isUserType } from 'front-end/lib/access-control';
 import router from 'front-end/lib/app/router';
@@ -8,7 +9,6 @@ import { ComponentView, GlobalComponentMsg, immutable, Immutable, mapComponentDi
 import * as api from 'front-end/lib/http/api';
 import { userStatusToColor, userStatusToTitleCase, userTypeToTitleCase } from 'front-end/lib/pages/user/lib';
 import Badge from 'front-end/lib/views/badge';
-import Icon from 'front-end/lib/views/icon';
 import Link, { routeDest } from 'front-end/lib/views/link';
 import React from 'react';
 import { Col, Row } from 'reactstrap';
@@ -135,10 +135,10 @@ function tableBodyRows(state: Immutable<State>): Table.BodyRows {
         className: 'text-nowrap'
       },
       {
-        children: (<Link dest={routeDest( adt('userProfile', { userId: user.id }) )}>{user.name}</Link>)
+        children: (<Link dest={routeDest( adt('userProfile', { userId: user.id }) )}>{user.name || EMPTY_STRING}</Link>)
       },
       {
-        children: isAdmin(user) ? (<Icon name='check' color='secondary' />) : null,
+        children: (<Table.Check checked={isAdmin(user)} />),
         className: 'text-center'
       }
     ];
