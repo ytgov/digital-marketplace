@@ -168,7 +168,7 @@ const PublicSectorView: ComponentView<State, Msg> = ({ state, dispatch }) => {
               chevronWidth={2}
               chevronHeight={2}
               open={state.isPublicSectorAccordionOpen}>
-                <div className='mb-3'>If you manage an open source digital product in the {COPY.region.name.long} public sector, <em>Code With Us</em> can help you access talented developers and pay for code quickly.</div>
+                <div className='mb-3'>If you manage an open source digital product in {COPY.gov.name.short}, <em>Code With Us</em> can help you access talented developers and pay for code quickly.</div>
                 <div className='mb-5'>Post an opportunity, evaluate proposals, assign a developer and get to work!</div>
                 <div className='d-flex flex-row mt-5 flex-nowrap'>
                   <Link
