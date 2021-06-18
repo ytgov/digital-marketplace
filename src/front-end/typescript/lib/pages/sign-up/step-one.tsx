@@ -7,7 +7,7 @@ import makeInstructionalSidebar from 'front-end/lib/views/sidebar/instructional'
 import { SignInCard } from 'front-end/lib/views/sign-in-card';
 import React from 'react';
 import { Col, Row } from 'reactstrap';
-import { GOV_IDP_NAME, VENDOR_IDP_NAME } from 'shared/config';
+import { COPY, GOV_IDP_NAME, VENDOR_IDP_NAME } from 'shared/config';
 import { UserType } from 'shared/lib/resources/user';
 import { ADT, adt } from 'shared/lib/types';
 import { invalid, valid, Validation } from 'shared/lib/validation';
@@ -56,7 +56,8 @@ const view: ComponentView<State, Msg> = viewValid(({ state }) => {
         userType={UserType.Vendor}
       />
 
-      <SignInCard title='Public Sector Employee'
+      <SignInCard
+        title={`${COPY.gov.name.short} Staff`}
         description={`Public sector employees will be required to use their ${GOV_IDP_NAME} to sign up for the Digital Marketplace.`}
         buttonText={`Sign Up Using ${GOV_IDP_NAME}`}
         redirectOnSuccess={state.redirectOnSuccess}
