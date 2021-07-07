@@ -237,6 +237,7 @@ Environment variables that affect the back-end server's functionality are stored
 | `SWAGGER_ENABLE` | A flag to enable the Swagger UI API documentation under `SWAGGER_UI_PATH`. Defaults to `false`.
 | `SWAGGER_UI_PATH` | The base path to run the Swagger UI under for serving of API documentation. Defaults to `/docs/api`. |
 | `TZ` | Time-zone to use for the back-end. Required by the Linux OS that runs the back-end, but not used as application configuration. |
+| `CONTACT_EMAIL` | The Digital Marketplace team's contact email address. |
 | `SHOW_TEST_INDICATOR` | A boolean flag (set to `0` for `false`, `1` for `true`) to indicate that an environment is intended for testing purposes (prefixes emails subjects and shows a testing variant of the logo in email notifications). Defaults to `false`. |
 
 #### Front-End Environment Variables
