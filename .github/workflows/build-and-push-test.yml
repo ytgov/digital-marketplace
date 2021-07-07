@@ -30,7 +30,7 @@ jobs:
         run: docker build . --build-arg PATH_PREFIX=$PATH_PREFIX --build-arg NODE_ENV=$NODE_ENV --build-arg SHOW_TEST_INDICATOR=$SHOW_TEST_INDICATOR --file Dockerfile --tag ${{ secrets.ACR_URI }}/digital_marketplace_test:${{ github.sha }}
         env:
           NODE_ENV: production
-          SHOW_TEST_INDICATOR: 1
+          SHOW_TEST_INDICATOR: "1"
           PATH_PREFIX: test-digital-marketplace
 
       - name: Push the new Docker image
