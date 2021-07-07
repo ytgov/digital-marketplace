@@ -23,11 +23,10 @@ jobs:
         run: echo ${{ secrets.ACR_PASSWORD }} | docker login -u ${{ secrets.ACR_USERNAME }} --password-stdin ${{ secrets.ACR_URI }}
 
       - name: Build the new Docker image and uniquely tag
-        run: docker build . --build-arg PATH_PREFIX=$PATH_PREFIX --build-arg NODE_ENV=$NODE_ENV --build-arg SHOW_TEST_INDICATOR=$SHOW_TEST_INDICATOR --build-arg CONTACT_EMAIL=$CONTACT_EMAIL --file Dockerfile --tag ${{ secrets.ACR_URI }}/digital_marketplace_prod:${{ github.sha }}
+        run: docker build . --build-arg PATH_PREFIX=$PATH_PREFIX --build-arg NODE_ENV=$NODE_ENV --build-arg SHOW_TEST_INDICATOR=$SHOW_TEST_INDICATOR --file Dockerfile --tag ${{ secrets.ACR_URI }}/digital_marketplace_prod:${{ github.sha }}
         env:
           NODE_ENV: production
           SHOW_TEST_INDICATOR: 0
-          CONTACT_EMAIL: digital-marketplace@yukon.ca
           PATH_PREFIX: digital-marketplace
 
       - name: Push the new Docker image

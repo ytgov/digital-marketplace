@@ -8,7 +8,7 @@ export function parseBooleanEnvironmentVariable(raw?: string): boolean | null {
 
 export const SHOW_TEST_INDICATOR = parseBooleanEnvironmentVariable(process.env.SHOW_TEST_INDICATOR) || false;
 
-export const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'digital-marketplace@yukon.ca';
+export const CONTACT_EMAIL = 'digital-marketplace@yukon.ca';
 
 export const GOV_IDP_SUFFIX = 'azure-ad';
 
