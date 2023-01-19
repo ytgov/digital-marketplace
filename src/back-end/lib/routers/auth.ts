@@ -132,7 +132,7 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
             redirect_uri: prefixPath("auth/callback"),
           };
 
-          logger.error("authorization failed", makeErrorResponseBody(error));
+          logger.error("authorization failed");
 
           logger.info("137 data", data);
 
