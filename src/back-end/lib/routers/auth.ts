@@ -92,6 +92,8 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
           // Retrieve authorization code and redirect
           const { code, redirectOnSuccess } = request.query;
 
+          console.log("95 req", request.query);
+
           // Use auth code to retrieve token asynchronously
           const data: KeyCloakTokenRequestData = {
             code,
@@ -102,6 +104,8 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
             redirect_uri: prefixPath('auth/callback')
           };
 
+          console.log("107 data", data);
+
           // If redirectOnSuccess was provided on callback, this must also be provided on token request (redirect_uri must match for each request)
           if (redirectOnSuccess) {
             data.redirect_uri += `?redirectOnSuccess=${redirectOnSuccess}`;
@@ -111,12 +115,19 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
           // data as any --> pacify the compiler
           const response = await httpRequest(ClientHttpMethod.Post, `${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, qs.stringify(data as any), headers);
 
+          console.log("118 response", response);
+
           if (response.status !== 200) {
+            console.log("121 response 200");
             return makeAuthErrorRedirect(request);
           }
 
           const tokenSet = new TokenSet(response.data as TokenSetParameters);
+          console.log("126 tokenSet", tokenSet);
+
           const { session, existingUser } = await establishSessionWithClaims(connection, request, tokenSet) || {};
+          console.log("129 session", session, existingUser);
+
           if (!session) {
             throw new Error('unable to create session');
           }
@@ -132,6 +143,7 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
             body: makeTextResponseBody('')
           };
         } catch (error) {
+          console.log("146 error", error);
           request.logger.error('authentication failed', makeErrorResponseBody(error));
           return makeAuthErrorRedirect(request);
         }
