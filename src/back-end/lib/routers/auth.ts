@@ -4,7 +4,7 @@ import {
   KEYCLOAK_REALM,
   KEYCLOAK_URL,
   SERVICE_TOKEN_HASH,
-  ENV,
+  ENV
 } from "back-end/config";
 import { prefixPath } from "back-end/lib";
 import {
@@ -15,7 +15,7 @@ import {
   findOneUserByTypeAndIdp,
   findOneUserByTypeAndUsername,
   readOneSession,
-  updateUser,
+  updateUser
 } from "back-end/lib/db";
 import { accountReactivatedSelf, userAccountRegistered } from "back-end/lib/mailer/notifications/user";
 import { authenticatePassword } from "back-end/lib/security";
@@ -26,7 +26,7 @@ import {
   passThroughRequestBodyHandler,
   Request,
   Router,
-  TextResponseBody,
+  TextResponseBody
 } from "back-end/lib/server";
 import { ServerHttpMethod } from "back-end/lib/types";
 import { generators, TokenSet, TokenSetParameters } from "openid-client";
@@ -68,7 +68,7 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
     {
       method: ServerHttpMethod.Get,
       path: "/auth/sign-in",
-      handler: nullRequestBodyHandler(async (request) => {
+      handler: nullRequestBodyHandler(async request => {
         try {
           const provider = request.query.provider;
           const redirectOnSuccess = request.query.redirectOnSuccess;
@@ -80,7 +80,7 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
             response_mode: "query",
             response_type: "code",
             scope: "openid",
-            nonce,
+            nonce
           };
 
           // If redirectOnSuccess specified, include that as query parameter for callback
@@ -101,26 +101,24 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
           return {
             code: 302,
             headers: {
-              Location: authUrl,
+              Location: authUrl
             },
             session: request.session,
-            body: makeTextResponseBody(""),
+            body: makeTextResponseBody("")
           };
         } catch (error) {
           request.logger.error("authorization failed", makeErrorResponseBody(error));
           return makeAuthErrorRedirect(request);
         }
-      }),
+      })
     },
     {
       method: ServerHttpMethod.Get,
       path: "/auth/callback",
-      handler: nullRequestBodyHandler(async (request) => {
+      handler: nullRequestBodyHandler(async request => {
         try {
           // Retrieve authorization code and redirect
           const { code, redirectOnSuccess } = request.query;
-
-          logger.info("123 req", request.query);
 
           // Use auth code to retrieve token asynchronously
           const data: KeyCloakTokenRequestData = {
@@ -129,12 +127,8 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
             client_id: KEYCLOAK_CLIENT_ID,
             client_secret: KEYCLOAK_CLIENT_SECRET,
             scope: "openid",
-            redirect_uri: prefixPath("auth/callback"),
+            redirect_uri: prefixPath("auth/callback")
           };
-
-          logger.error("authorization failed");
-
-          logger.info("137 data", data);
 
           // If redirectOnSuccess was provided on callback, this must also be provided on token request (redirect_uri must match for each request)
           if (redirectOnSuccess) {
@@ -143,6 +137,7 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
 
           const headers = { "Content-Type": "application/x-www-form-urlencoded" };
           // data as any --> pacify the compiler
+
           const response = await httpRequest(
             ClientHttpMethod.Post,
             `${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`,
@@ -150,18 +145,18 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
             headers
           );
 
-          logger.info("153 response", response);
+          logger.info("147 response", response);
 
           if (response.status !== 200) {
-            logger.info("156 response 200");
+            logger.info("150 response not 200", response);
             return makeAuthErrorRedirect(request);
           }
 
           const tokenSet = new TokenSet(response.data as TokenSetParameters);
-          logger.info("161 tokenSet", tokenSet);
+          logger.info("155 tokenSet", tokenSet);
 
           const { session, existingUser } = (await establishSessionWithClaims(connection, request, tokenSet)) || {};
-          logger.info("164 session");
+          logger.info("158 session");
 
           if (!session) {
             throw new Error("unable to create session");
@@ -176,18 +171,18 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
           return {
             code: 302,
             headers: {
-              Location: signinCompleteLocation,
+              Location: signinCompleteLocation
             },
             session,
-            body: makeTextResponseBody(""),
+            body: makeTextResponseBody("")
           };
         } catch (error) {
           logger.info("185 error");
           request.logger.error("authentication failed", makeErrorResponseBody(error));
           return makeAuthErrorRedirect(request);
         }
-      }),
-    },
+      })
+    }
   ];
 
   // Routes that are added only if the service token environment variable is defined
@@ -198,7 +193,7 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
     router.push({
       method: ServerHttpMethod.Post,
       path: "/auth/service",
-      handler: passThroughRequestBodyHandler(async (request) => {
+      handler: passThroughRequestBodyHandler(async request => {
         try {
           // Retrieve service token from query paramters and validate
           const serviceToken = request.query.token;
@@ -207,7 +202,7 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
               code: 401,
               headers: {},
               session: request.session,
-              body: makeTextResponseBody("Not authorized"),
+              body: makeTextResponseBody("Not authorized")
             };
           }
           // Extract claims and create/update user
@@ -226,17 +221,17 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
             code: 200,
             headers: {},
             session,
-            body: makeTextResponseBody(""),
+            body: makeTextResponseBody("")
           };
         } catch (error) {
           return {
             code: 400,
             headers: {},
             session: request.session,
-            body: makeTextResponseBody(""),
+            body: makeTextResponseBody("")
           };
         }
-      }),
+      })
     });
 
     // The /auth/override-session endpoint is for overriding an existing session with a new user account.
@@ -245,7 +240,7 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
     router.push({
       method: ServerHttpMethod.Get,
       path: "/auth/override-session/:type/:username",
-      handler: nullRequestBodyHandler(async (request) => {
+      handler: nullRequestBodyHandler(async request => {
         try {
           // Retrieve service token from query paramters and validate.
           // Also check that current session is authenticated.
@@ -255,7 +250,7 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
               code: 401,
               headers: {},
               session: request.session,
-              body: makeTextResponseBody("Not authorized"),
+              body: makeTextResponseBody("Not authorized")
             };
           }
 
@@ -277,7 +272,7 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
                 code: 400,
                 headers: {},
                 session: request.session,
-                body: makeTextResponseBody(""),
+                body: makeTextResponseBody("")
               };
           }
           const overrideUser = getValidValue(
@@ -295,24 +290,24 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
               code: 200,
               headers: {},
               session: newSession,
-              body: makeTextResponseBody("OK"),
+              body: makeTextResponseBody("OK")
             };
           }
           return {
             code: 400,
             headers: {},
             session: request.session,
-            body: makeTextResponseBody(""),
+            body: makeTextResponseBody("")
           };
         } catch (error) {
           return {
             code: 400,
             headers: {},
             session: request.session,
-            body: makeTextResponseBody(""),
+            body: makeTextResponseBody("")
           };
         }
-      }),
+      })
     });
   }
   return router;
@@ -372,7 +367,7 @@ async function establishSessionWithClaims(connection: Connection, request: Reque
         name: claims.name || "",
         email: claims.email || null,
         jobTitle: "",
-        idpUsername: username,
+        idpUsername: username
       }),
       null
     );
@@ -400,7 +395,7 @@ async function establishSessionWithClaims(connection: Connection, request: Reque
 
   const result = await createSession(connection, {
     user: user && user.id,
-    accessToken: tokenSet.refresh_token,
+    accessToken: tokenSet.refresh_token
   });
   if (isInvalid(result)) {
     makeAuthErrorRedirect(request);
@@ -411,15 +406,15 @@ async function establishSessionWithClaims(connection: Connection, request: Reque
 }
 
 function makeAuthErrorRedirect(request: Request<any, Session>) {
-  logger.error("THIS IS A TEST", { crap: "code" });
+  logger.info("409", request);
 
   return {
     code: 302,
     headers: {
-      Location: prefixPath("/notice/authFailure"),
+      Location: prefixPath("/notice/authFailure")
     },
     session: request.session,
-    body: makeTextResponseBody(""),
+    body: makeTextResponseBody("")
   };
 }
 
