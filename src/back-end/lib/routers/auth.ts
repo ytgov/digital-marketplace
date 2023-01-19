@@ -137,6 +137,7 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
 
           const headers = { "Content-Type": "application/x-www-form-urlencoded" };
           // data as any --> pacify the compiler
+          logger.info("147 response " + `${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`);
 
           const response = await httpRequest(
             ClientHttpMethod.Post,
