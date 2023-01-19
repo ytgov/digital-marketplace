@@ -1,37 +1,65 @@
-import { KEYCLOAK_CLIENT_ID, KEYCLOAK_CLIENT_SECRET, KEYCLOAK_REALM, KEYCLOAK_URL, SERVICE_TOKEN_HASH } from 'back-end/config';
-import { prefixPath } from 'back-end/lib';
-import { Connection, createSession, createUser, deleteSession, findOneUserByTypeAndIdp, findOneUserByTypeAndUsername, readOneSession, updateUser } from 'back-end/lib/db';
-import { accountReactivatedSelf, userAccountRegistered } from 'back-end/lib/mailer/notifications/user';
-import { authenticatePassword } from 'back-end/lib/security';
-import { makeErrorResponseBody, makeTextResponseBody, nullRequestBodyHandler, passThroughRequestBodyHandler, Request, Router, TextResponseBody } from 'back-end/lib/server';
-import { ServerHttpMethod } from 'back-end/lib/types';
-import { generators, TokenSet, TokenSetParameters } from 'openid-client';
-import qs from 'querystring';
-import { GOV_IDP_SUFFIX, VENDOR_IDP_SUFFIX } from 'shared/config';
-import { getString, getStringArray } from 'shared/lib';
-import { request as httpRequest } from 'shared/lib/http';
-import { Session } from 'shared/lib/resources/session';
-import { KeyCloakIdentityProvider, User, UserStatus, UserType } from 'shared/lib/resources/user';
-import { ClientHttpMethod } from 'shared/lib/types';
-import { getValidValue, isInvalid, isValid } from 'shared/lib/validation';
+import {
+  KEYCLOAK_CLIENT_ID,
+  KEYCLOAK_CLIENT_SECRET,
+  KEYCLOAK_REALM,
+  KEYCLOAK_URL,
+  SERVICE_TOKEN_HASH,
+  ENV,
+} from "back-end/config";
+import { prefixPath } from "back-end/lib";
+import {
+  Connection,
+  createSession,
+  createUser,
+  deleteSession,
+  findOneUserByTypeAndIdp,
+  findOneUserByTypeAndUsername,
+  readOneSession,
+  updateUser,
+} from "back-end/lib/db";
+import { accountReactivatedSelf, userAccountRegistered } from "back-end/lib/mailer/notifications/user";
+import { authenticatePassword } from "back-end/lib/security";
+import {
+  makeErrorResponseBody,
+  makeTextResponseBody,
+  nullRequestBodyHandler,
+  passThroughRequestBodyHandler,
+  Request,
+  Router,
+  TextResponseBody,
+} from "back-end/lib/server";
+import { ServerHttpMethod } from "back-end/lib/types";
+import { generators, TokenSet, TokenSetParameters } from "openid-client";
+import qs from "querystring";
+import { GOV_IDP_SUFFIX, VENDOR_IDP_SUFFIX } from "shared/config";
+import { getString, getStringArray } from "shared/lib";
+import { request as httpRequest } from "shared/lib/http";
+import { Session } from "shared/lib/resources/session";
+import { KeyCloakIdentityProvider, User, UserStatus, UserType } from "shared/lib/resources/user";
+import { ClientHttpMethod } from "shared/lib/types";
+import { getValidValue, isInvalid, isValid } from "shared/lib/validation";
+import { makeDomainLogger } from "back-end/lib/logger";
+import { console as consoleAdapter } from "back-end/lib/logger/adapters";
+
+const logger = makeDomainLogger(consoleAdapter, "back-end", ENV);
 
 interface KeyCloakAuthQuery {
   client_id: string;
   client_secret: string;
   redirect_uri: string;
-  response_mode: 'query';
-  response_type: 'code';
-  scope: 'openid';
+  response_mode: "query";
+  response_type: "code";
+  scope: "openid";
   nonce: string;
   kc_idp_hint?: KeyCloakIdentityProvider;
 }
 
 interface KeyCloakTokenRequestData {
   code: string;
-  grant_type: 'authorization_code';
+  grant_type: "authorization_code";
   client_id: string;
   client_secret: string;
-  scope: 'openid';
+  scope: "openid";
   redirect_uri: string;
 }
 
@@ -39,8 +67,8 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
   const router: Router<any, any, any, any, TextResponseBody, any, any> = [
     {
       method: ServerHttpMethod.Get,
-      path: '/auth/sign-in',
-      handler: nullRequestBodyHandler(async request => {
+      path: "/auth/sign-in",
+      handler: nullRequestBodyHandler(async (request) => {
         try {
           const provider = request.query.provider;
           const redirectOnSuccess = request.query.redirectOnSuccess;
@@ -48,11 +76,11 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
           const authQuery: KeyCloakAuthQuery = {
             client_id: KEYCLOAK_CLIENT_ID,
             client_secret: KEYCLOAK_CLIENT_SECRET,
-            redirect_uri: prefixPath('auth/callback'),
-            response_mode: 'query',
-            response_type: 'code',
-            scope: 'openid',
-            nonce
+            redirect_uri: prefixPath("auth/callback"),
+            response_mode: "query",
+            response_type: "code",
+            scope: "openid",
+            nonce,
           };
 
           // If redirectOnSuccess specified, include that as query parameter for callback
@@ -73,120 +101,142 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
           return {
             code: 302,
             headers: {
-              'Location': authUrl
+              Location: authUrl,
             },
             session: request.session,
-            body: makeTextResponseBody('')
+            body: makeTextResponseBody(""),
           };
         } catch (error) {
-          request.logger.error('authorization failed', makeErrorResponseBody(error));
+          request.logger.error("authorization failed", makeErrorResponseBody(error));
           return makeAuthErrorRedirect(request);
         }
-      })
+      }),
     },
     {
       method: ServerHttpMethod.Get,
-      path: '/auth/callback',
-      handler: nullRequestBodyHandler(async request => {
+      path: "/auth/callback",
+      handler: nullRequestBodyHandler(async (request) => {
         try {
           // Retrieve authorization code and redirect
           const { code, redirectOnSuccess } = request.query;
 
+          logger.info("123 req", request.query);
+
           // Use auth code to retrieve token asynchronously
           const data: KeyCloakTokenRequestData = {
             code,
-            grant_type: 'authorization_code',
+            grant_type: "authorization_code",
             client_id: KEYCLOAK_CLIENT_ID,
             client_secret: KEYCLOAK_CLIENT_SECRET,
-            scope: 'openid',
-            redirect_uri: prefixPath('auth/callback')
+            scope: "openid",
+            redirect_uri: prefixPath("auth/callback"),
           };
+
+          logger.error("authorization failed", makeErrorResponseBody(error));
+
+          logger.info("137 data", data);
 
           // If redirectOnSuccess was provided on callback, this must also be provided on token request (redirect_uri must match for each request)
           if (redirectOnSuccess) {
             data.redirect_uri += `?redirectOnSuccess=${redirectOnSuccess}`;
           }
 
-          const headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+          const headers = { "Content-Type": "application/x-www-form-urlencoded" };
           // data as any --> pacify the compiler
-          const response = await httpRequest(ClientHttpMethod.Post, `${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`, qs.stringify(data as any), headers);
+          const response = await httpRequest(
+            ClientHttpMethod.Post,
+            `${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`,
+            qs.stringify(data as any),
+            headers
+          );
+
+          logger.info("153 response", response);
 
           if (response.status !== 200) {
+            logger.info("156 response 200");
             return makeAuthErrorRedirect(request);
           }
 
           const tokenSet = new TokenSet(response.data as TokenSetParameters);
-          const { session, existingUser } = await establishSessionWithClaims(connection, request, tokenSet) || {};
+          logger.info("161 tokenSet", tokenSet);
+
+          const { session, existingUser } = (await establishSessionWithClaims(connection, request, tokenSet)) || {};
+          logger.info("164 session");
+
           if (!session) {
-            throw new Error('unable to create session');
+            throw new Error("unable to create session");
           }
 
-          const signinCompleteLocation = redirectOnSuccess ? redirectOnSuccess : (existingUser ? prefixPath('/dashboard') : prefixPath('/sign-up/complete'));
+          const signinCompleteLocation = redirectOnSuccess
+            ? redirectOnSuccess
+            : existingUser
+            ? prefixPath("/dashboard")
+            : prefixPath("/sign-up/complete");
 
           return {
             code: 302,
             headers: {
-              'Location': signinCompleteLocation
+              Location: signinCompleteLocation,
             },
             session,
-            body: makeTextResponseBody('')
+            body: makeTextResponseBody(""),
           };
         } catch (error) {
-          request.logger.error('authentication failed', makeErrorResponseBody(error));
+          logger.info("185 error");
+          request.logger.error("authentication failed", makeErrorResponseBody(error));
           return makeAuthErrorRedirect(request);
         }
-      })
-    }
+      }),
+    },
   ];
 
   // Routes that are added only if the service token environment variable is defined
   // Requests to these routes much include the correct service token in order to be processed.
   if (SERVICE_TOKEN_HASH) {
-
     // The /auth/service endpoint is for creating user accounts for testing purposes.
     // The test users must already exist in KeyCloak with the appropriate attributes and claims.
     router.push({
       method: ServerHttpMethod.Post,
-      path: '/auth/service',
-      handler: passThroughRequestBodyHandler(async request => {
+      path: "/auth/service",
+      handler: passThroughRequestBodyHandler(async (request) => {
         try {
           // Retrieve service token from query paramters and validate
           const serviceToken = request.query.token;
-          if (!serviceToken || !await authenticatePassword(serviceToken, SERVICE_TOKEN_HASH)) {
+          if (!serviceToken || !(await authenticatePassword(serviceToken, SERVICE_TOKEN_HASH))) {
             return {
               code: 401,
               headers: {},
               session: request.session,
-              body: makeTextResponseBody('Not authorized')
+              body: makeTextResponseBody("Not authorized"),
             };
           }
           // Extract claims and create/update user
           const validRequestBody = getValidValue(request.body, undefined);
           if (!validRequestBody) {
-            throw new Error('no request body provided');
+            throw new Error("no request body provided");
           }
 
-          const body: unknown = validRequestBody.tag === 'json' ? validRequestBody.value : {};
+          const body: unknown = validRequestBody.tag === "json" ? validRequestBody.value : {};
           const tokens = new TokenSet(body as TokenSetParameters);
-          const { session } = await establishSessionWithClaims(connection, request, tokens) || {};
+          const { session } = (await establishSessionWithClaims(connection, request, tokens)) || {};
           if (!session) {
-            throw new Error('unable to establish session');
+            throw new Error("unable to establish session");
           }
           return {
             code: 200,
             headers: {},
             session,
-            body: makeTextResponseBody('')
+            body: makeTextResponseBody(""),
           };
         } catch (error) {
           return {
             code: 400,
             headers: {},
             session: request.session,
-            body: makeTextResponseBody('')
+            body: makeTextResponseBody(""),
           };
         }
-      })
+      }),
     });
 
     // The /auth/override-session endpoint is for overriding an existing session with a new user account.
@@ -194,18 +244,18 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
     // This should be used only for testing and QA purposes, and is not meant for use in production.
     router.push({
       method: ServerHttpMethod.Get,
-      path: '/auth/override-session/:type/:username',
-      handler: nullRequestBodyHandler(async request => {
+      path: "/auth/override-session/:type/:username",
+      handler: nullRequestBodyHandler(async (request) => {
         try {
           // Retrieve service token from query paramters and validate.
           // Also check that current session is authenticated.
           const serviceToken = request.query.token;
-          if (!await authenticatePassword(serviceToken, SERVICE_TOKEN_HASH) || !request.session.user) {
+          if (!(await authenticatePassword(serviceToken, SERVICE_TOKEN_HASH)) || !request.session.user) {
             return {
               code: 401,
               headers: {},
               session: request.session,
-              body: makeTextResponseBody('Not authorized')
+              body: makeTextResponseBody("Not authorized"),
             };
           }
 
@@ -213,13 +263,13 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
           const overrideUserName = request.params.username;
           let overrideAccountType;
           switch (request.params.type.toLowerCase()) {
-            case 'vendor':
+            case "vendor":
               overrideAccountType = UserType.Vendor;
               break;
-            case 'gov':
+            case "gov":
               overrideAccountType = UserType.Government;
               break;
-            case 'admin':
+            case "admin":
               overrideAccountType = UserType.Admin;
               break;
             default:
@@ -227,36 +277,42 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
                 code: 400,
                 headers: {},
                 session: request.session,
-                body: makeTextResponseBody('')
+                body: makeTextResponseBody(""),
               };
           }
-          const overrideUser = getValidValue(await findOneUserByTypeAndUsername(connection, overrideAccountType, overrideUserName), undefined);
+          const overrideUser = getValidValue(
+            await findOneUserByTypeAndUsername(connection, overrideAccountType, overrideUserName),
+            undefined
+          );
           const currentSession = getValidValue(await readOneSession(connection, request.session.id), undefined);
           if (overrideUser && currentSession) {
-            const newSession = getValidValue(await createSession(connection, { accessToken: currentSession.accessToken, user: overrideUser.id }), currentSession);
+            const newSession = getValidValue(
+              await createSession(connection, { accessToken: currentSession.accessToken, user: overrideUser.id }),
+              currentSession
+            );
             await deleteSession(connection, currentSession.id);
             return {
               code: 200,
               headers: {},
               session: newSession,
-              body: makeTextResponseBody('OK')
+              body: makeTextResponseBody("OK"),
             };
           }
           return {
             code: 400,
             headers: {},
             session: request.session,
-            body: makeTextResponseBody('')
+            body: makeTextResponseBody(""),
           };
         } catch (error) {
           return {
             code: 400,
             headers: {},
             session: request.session,
-            body: makeTextResponseBody('')
+            body: makeTextResponseBody(""),
           };
         }
-      })
+      }),
     });
   }
   return router;
@@ -267,11 +323,11 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
 async function establishSessionWithClaims(connection: Connection, request: Request<any, Session>, tokenSet: TokenSet) {
   const claims = tokenSet.claims();
   let userType: UserType;
-  const identityProvider = getString(claims, 'loginSource');
+  const identityProvider = getString(claims, "loginSource");
   switch (identityProvider) {
     case GOV_IDP_SUFFIX.toUpperCase():
-      const roles = getStringArray(claims, 'roles');
-      if (roles.includes('dm_admin')) {
+      const roles = getStringArray(claims, "roles");
+      if (roles.includes("dm_admin")) {
         userType = UserType.Admin;
       } else {
         userType = UserType.Government;
@@ -281,21 +337,24 @@ async function establishSessionWithClaims(connection: Connection, request: Reque
       userType = UserType.Vendor;
       break;
     default:
-      request.logger.error('unknown identity provider', makeErrorResponseBody(new Error(identityProvider)));
+      request.logger.error("unknown identity provider", makeErrorResponseBody(new Error(identityProvider)));
       makeAuthErrorRedirect(request);
       return null;
   }
 
-  let username = getString(claims, 'preferred_username');
-  const idpId = getString(claims, 'idp_id');
+  let username = getString(claims, "preferred_username");
+  const idpId = getString(claims, "idp_id");
 
   // Strip the vendor/gov suffix if present.  We want to match and store the username without suffix.
-  if ((username.endsWith('@' + VENDOR_IDP_SUFFIX) && userType === UserType.Vendor) || (username.endsWith('@' + GOV_IDP_SUFFIX) && userType === UserType.Government)) {
-    username = username.slice(0, username.lastIndexOf('@'));
+  if (
+    (username.endsWith("@" + VENDOR_IDP_SUFFIX) && userType === UserType.Vendor) ||
+    (username.endsWith("@" + GOV_IDP_SUFFIX) && userType === UserType.Government)
+  ) {
+    username = username.slice(0, username.lastIndexOf("@"));
   }
 
   if (!username || !idpId || !tokenSet.access_token || !tokenSet.refresh_token) {
-    throw new Error('authentication failure - invalid claims');
+    throw new Error("authentication failure - invalid claims");
   }
 
   const dbResult = await findOneUserByTypeAndIdp(connection, userType, idpId);
@@ -305,15 +364,18 @@ async function establishSessionWithClaims(connection: Connection, request: Reque
   let user = dbResult.value as User | null;
   const existingUser = !!user;
   if (!user) {
-    user = getValidValue(await createUser(connection, {
-      idpId,
-      type: userType,
-      status: UserStatus.Active,
-      name: claims.name || '',
-      email: claims.email || null,
-      jobTitle: '',
-      idpUsername: username
-    }), null);
+    user = getValidValue(
+      await createUser(connection, {
+        idpId,
+        type: userType,
+        status: UserStatus.Active,
+        name: claims.name || "",
+        email: claims.email || null,
+        jobTitle: "",
+        idpUsername: username,
+      }),
+      null
+    );
 
     // If email present, notify of successful account creation
     if (user && user.email) {
@@ -338,7 +400,7 @@ async function establishSessionWithClaims(connection: Connection, request: Reque
 
   const result = await createSession(connection, {
     user: user && user.id,
-    accessToken: tokenSet.refresh_token
+    accessToken: tokenSet.refresh_token,
   });
   if (isInvalid(result)) {
     makeAuthErrorRedirect(request);
@@ -349,13 +411,15 @@ async function establishSessionWithClaims(connection: Connection, request: Reque
 }
 
 function makeAuthErrorRedirect(request: Request<any, Session>) {
+  logger.error("THIS IS A TEST", { crap: "code" });
+
   return {
     code: 302,
     headers: {
-      'Location': prefixPath('/notice/authFailure')
+      Location: prefixPath("/notice/authFailure"),
     },
     session: request.session,
-    body: makeTextResponseBody('')
+    body: makeTextResponseBody(""),
   };
 }
 
