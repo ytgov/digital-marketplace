@@ -3,8 +3,7 @@ import {
   KEYCLOAK_CLIENT_SECRET,
   KEYCLOAK_REALM,
   KEYCLOAK_URL,
-  SERVICE_TOKEN_HASH,
-  ENV
+  SERVICE_TOKEN_HASH
 } from "back-end/config";
 import { prefixPath } from "back-end/lib";
 import {
@@ -38,10 +37,6 @@ import { Session } from "shared/lib/resources/session";
 import { KeyCloakIdentityProvider, User, UserStatus, UserType } from "shared/lib/resources/user";
 import { ClientHttpMethod } from "shared/lib/types";
 import { getValidValue, isInvalid, isValid } from "shared/lib/validation";
-import { makeDomainLogger } from "back-end/lib/logger";
-import { console as consoleAdapter } from "back-end/lib/logger/adapters";
-
-const logger = makeDomainLogger(consoleAdapter, "back-end", ENV);
 
 interface KeyCloakAuthQuery {
   client_id: string;
@@ -137,7 +132,6 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
 
           const headers = { "Content-Type": "application/x-www-form-urlencoded" };
           // data as any --> pacify the compiler
-          logger.info("147 response " + `${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_REALM}/protocol/openid-connect/token`);
 
           const response = await httpRequest(
             ClientHttpMethod.Post,
@@ -146,18 +140,13 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
             headers
           );
 
-          logger.info("147 response", response);
-
           if (response.status !== 200) {
-            logger.info("150 response not 200", response);
             return makeAuthErrorRedirect(request);
           }
 
           const tokenSet = new TokenSet(response.data as TokenSetParameters);
-          logger.info("155 tokenSet", tokenSet);
 
           const { session, existingUser } = (await establishSessionWithClaims(connection, request, tokenSet)) || {};
-          logger.info("158 session");
 
           if (!session) {
             throw new Error("unable to create session");
@@ -178,7 +167,6 @@ async function makeRouter(connection: Connection): Promise<Router<any, any, any,
             body: makeTextResponseBody("")
           };
         } catch (error) {
-          logger.info("185 error");
           request.logger.error("authentication failed", makeErrorResponseBody(error));
           return makeAuthErrorRedirect(request);
         }
@@ -407,8 +395,6 @@ async function establishSessionWithClaims(connection: Connection, request: Reque
 }
 
 function makeAuthErrorRedirect(request: Request<any, Session>) {
-  logger.info("409", request);
-
   return {
     code: 302,
     headers: {
